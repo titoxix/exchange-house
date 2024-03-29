@@ -13,14 +13,91 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Customer {
-  idAuto    String   @id @default(cuid())
+model Customers {
+  idAuto    Int      @id @default(autoincrement())
   id        String   @unique
   email     String?  @unique
   name      String
   lastName  String
   phone     String?
   address   String?
+  orders    Orders[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model Orders {
+  idAuto     Int       @id @default(autoincrement())
+  id         String    @unique
+  type       OrderType
+  price      Float
+  usdAmount  Float?
+  pesoAmount Float?
+  customer   Customers @relation(fields: [customerId], references: [idAuto])
+  customerId Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+}
+
+model CashAudits {
+  idAuto             Int      @id @default(autoincrement())
+  id                 String   @unique
+  usdInitialAmount   Float
+  pesosInitialAmount Float
+  usdAmount          Float?
+  pesosAmount        Float?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Prices {
+  idAuto       String   @id @default(cuid())
+  id           String   @unique
+  currency     String
+  priceBuy     Float
+  priceSell    Float
+  sourceOrigin String
+  createdAt    DateTime @default(now())
+}
+
+model PricesConfig {
+  idAuto        Int      @id @default(autoincrement())
+  id            String   @unique
+  SourceOrigin  String // URL
+  timeToRefresh Int      @default(60) // in minutes
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Users {
+  idAuto    Int      @id @default(autoincrement())
+  id        String   @unique
+  email     String   @unique
+  name      String
+  lastName  String
+  profile   Profile?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+model Profile {
+  idAuto    Int      @id @default(autoincrement())
+  id        String   @unique
+  role      Role     @default(USER)
+  user      Users    @relation(fields: [userId], references: [idAuto])
+  enabled   Boolean  @default(true)
+  password  String
+  userId    Int      @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum OrderType {
+  BUY
+  SELL
+}
+
+enum Role {
+  ADMIN
+  USER
 }
