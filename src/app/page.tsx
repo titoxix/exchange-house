@@ -1,62 +1,55 @@
-import { Button } from "@nextui-org/button";
-import {
-  Navbar,
-  NavbarBrand,
-  NavbarContent,
-  NavbarItem,
-  NavbarMenuToggle,
-  NavbarMenu,
-  NavbarMenuItem,
-  Link,
-} from "@nextui-org/react";
+"use client";
 
-export const AcmeLogo = () => (
-  <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
-    <path
-      clipRule="evenodd"
-      d="M17.6482 10.1305L15.8785 7.02583L7.02979 22.5499H10.5278L17.6482 10.1305ZM19.8798 14.0457L18.11 17.1983L19.394 19.4511H16.8453L15.1056 22.5499H24.7272L19.8798 14.0457Z"
-      fill="currentColor"
-      fillRule="evenodd"
-    />
-  </svg>
-);
+import Table from "@/components/table/Table";
+import PriceCard from "@/components/PriceCard";
+import { Divider } from "@nextui-org/react";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <Navbar>
-        <NavbarBrand>
-          <AcmeLogo />
-          <p className="font-bold text-inherit">ACME</p>
-        </NavbarBrand>
-        <NavbarContent className="hidden sm:flex gap-4" justify="center">
-          <NavbarItem>
-            <Link color="foreground" href="#">
-              Features
-            </Link>
-          </NavbarItem>
-          <NavbarItem isActive>
-            <Link href="#" aria-current="page">
-              Customers
-            </Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Link color="foreground" href="#">
-              Integrations
-            </Link>
-          </NavbarItem>
-        </NavbarContent>
-        <NavbarContent justify="end">
-          <NavbarItem className="hidden lg:flex">
-            <Link href="#">Login</Link>
-          </NavbarItem>
-          <NavbarItem>
-            <Button as={Link} color="primary" href="#" variant="flat">
-              Sign Up
-            </Button>
-          </NavbarItem>
-        </NavbarContent>
-      </Navbar>
-    </main>
+    <div className="">
+      <section className="flex flex-col gap-4">
+        <span className="text-lg font-bold">Cotizaciones</span>
+        <div className="flex gap-3 justify-center">
+          <PriceCard
+            currency="Dólar"
+            flag="united-states.png"
+            buy="36,70000"
+            sell="39,10000"
+          />
+          <PriceCard
+            currency="Dólar eBROU"
+            flag="united-states.png"
+            buy="37,20000"
+            sell="38,60000"
+          />
+          <PriceCard
+            currency="Euro"
+            flag="european-union.png"
+            buy="38,47000"
+            sell="43,21000"
+          />
+          <PriceCard
+            currency="Peso Argentino"
+            flag="argentina.png"
+            buy="0,02400"
+            sell="0,20000"
+          />
+          <PriceCard
+            currency="Real"
+            flag="brazil.png"
+            buy="7,40000"
+            sell="9,10000"
+          />
+        </div>
+        <span className="text-xs text-default-400">
+          Última actualización: 01/04/2024 17:10:02
+        </span>
+      </section>
+      <Divider className="my-4" />
+      <section className="flex flex-col gap-4">
+        <span className="text-lg font-bold">Últimas operaciones</span>
+        <Table />
+      </section>
+    </div>
   );
 }
