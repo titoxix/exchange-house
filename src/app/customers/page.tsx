@@ -3,6 +3,7 @@ import Table from "@/components/table/Table";
 import { Button, Input } from "@nextui-org/react";
 import { PlusIcon } from "@/components/icons/PlusIcon";
 import { SearchIcon } from "@/components/icons/SearchIcon";
+import CustomerTable from "@/components/CustomerTable";
 
 export default function Customers() {
   return (
@@ -23,7 +24,7 @@ export default function Customers() {
             Agregar cliente
           </Button>
         </div>
-        <Table />
+        <CustomerTable />
       </section>
     </div>
   );

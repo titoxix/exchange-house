@@ -1,6 +1,6 @@
 "use client";
 
-import Table from "@/components/table/Table";
+import OrdersTable from "@/components/OrdersTable";
 import PriceCard from "@/components/PriceCard";
 import { Divider } from "@nextui-org/react";
 
@@ -48,7 +48,7 @@ export default function Home() {
       <Divider className="my-4" />
       <section className="flex flex-col gap-4">
         <span className="text-lg font-bold">Últimas operaciones</span>
-        <Table />
+        <OrdersTable />
       </section>
     </div>
   );

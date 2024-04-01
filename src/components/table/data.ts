@@ -1,5 +1,5 @@
 
-const columns = [
+const columnsMock = [
   {name: "NAME", uid: "name"},
   {name: "ROLE", uid: "role"},
   {name: "STATUS", uid: "status"},
@@ -59,4 +59,4 @@ const users = [
   },
 ];
 
-export {columns, users};
+export {columnsMock, users};
