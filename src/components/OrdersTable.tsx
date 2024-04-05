@@ -2,6 +2,7 @@ import Table, { Item } from "@/components/table/Table";
 import { EditIcon } from "./icons/EditIcon";
 import { EyeIcon } from "./icons/EyeIcon";
 import { Tooltip } from "@nextui-org/react";
+import { Order } from "@/interfaces/order";
 
 const columns = [
   { name: "FECHA", uid: "date" },
@@ -10,23 +11,14 @@ const columns = [
   { name: "COTIZACIÓN", uid: "price" },
   { name: "MONTO DOLARES", uid: "usdAmount" },
   { name: "MONTO PESOS", uid: "pesosAmount" },
-  { name: "CLIENTE", uid: "customer" },
+  { name: "CLIENTE", uid: "customerName" },
   // { name: "ACTIONS", uid: "actions" },
 ];
 
-const orders = [
-  {
-    id: "f01e5115-15ea-435b-a8ed-cde16e263245",
-    date: "01/04/2024",
-    time: "10:00",
-    type: "Compra",
-    price: "38,45",
-    usdAmount: "500",
-    pesosAmount: "1000",
-    customer: "Juan Perez",
-  },
-];
-export default function OrdersTable() {
+interface Props {
+  orders: Order[];
+}
+export default function OrdersTable({ orders }: Props) {
   /* const cellConfiguration = (cellValue: string, columnKey: string) => {
     switch (columnKey) {
       case "actions":

@@ -1,14 +1,14 @@
 import { NextResponse, NextRequest } from 'next/server'
 import prisma from "@/libs/prisma";
 import { v4 as uuidv4 } from 'uuid';
+import { getAllOrders } from "@/server/orders";
 
 export async function GET() {
     try {
-        const orders = await prisma.orders.findMany({
-            include: {
-                customer: true
-            }
-        });
+        const { error, status, data: orders } = await getAllOrders();
+        if (status !== 200) {
+            return NextResponse.json({ error: error }, { status: status })
+        }
         return NextResponse.json(orders)
     } catch (error) {
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })

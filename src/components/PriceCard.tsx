@@ -15,7 +15,7 @@ interface Props {
 }
 
 export default function PriceCard(props: Props) {
-  const [isFollowed, setIsFollowed] = React.useState(false);
+  //const [isFollowed, setIsFollowed] = React.useState(false);
 
   return (
     <Card className="w-48">

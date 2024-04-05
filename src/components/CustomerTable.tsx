@@ -1,3 +1,5 @@
+"use client";
+
 import Table, { Item } from "@/components/table/Table";
 import { User, Chip, Tooltip } from "@nextui-org/react";
 import { EditIcon } from "./icons/EditIcon";

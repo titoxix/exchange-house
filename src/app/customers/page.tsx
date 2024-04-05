@@ -1,5 +1,5 @@
-"use client";
-import Table from "@/components/table/Table";
+//"use client";
+
 import { Button, Input } from "@nextui-org/react";
 import { PlusIcon } from "@/components/icons/PlusIcon";
 import { SearchIcon } from "@/components/icons/SearchIcon";

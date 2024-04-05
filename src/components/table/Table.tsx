@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import {
   Table as NextUITable,
@@ -9,14 +11,14 @@ import {
 } from "@nextui-org/react";
 
 export interface Item {
-  [key: string]: string | number;
+  [key: string]: string | number | null | boolean | object;
 }
 interface Props {
   columns: {
     name: string;
     uid: string;
   }[];
-  items: Item[];
+  items: any[];
   cellConfiguration?: (
     cellValue: string,
     columnKey: string,
@@ -57,9 +59,11 @@ export default function Table({ columns, items, cellConfiguration }: Props) {
       </TableHeader>
       <TableBody items={items}>
         {(item) => (
-          <TableRow key={item.id}>
+          <TableRow key={item.id as string}>
             {(columnKey) => (
-              <TableCell>{renderCell(item, columnKey)}</TableCell>
+              <TableCell>
+                {renderCell(item, columnKey) as React.ReactNode}
+              </TableCell>
             )}
           </TableRow>
         )}
