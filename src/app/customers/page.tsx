@@ -1,9 +1,7 @@
-//"use client";
-
-import { Button, Input } from "@nextui-org/react";
-import { PlusIcon } from "@/components/icons/PlusIcon";
+import { Input } from "@nextui-org/react";
 import { SearchIcon } from "@/components/icons/SearchIcon";
 import CustomerTable from "@/components/CustomerTable";
+import CustomerForm from "@/components/CustomerForm";
 
 export default function Customers() {
   return (
@@ -20,9 +18,7 @@ export default function Customers() {
             //onClear={() => onClear()}
             //onValueChange={onSearchChange}
           />
-          <Button color="primary" endContent={<PlusIcon />}>
-            Agregar cliente
-          </Button>
+          <CustomerForm />
         </div>
         <CustomerTable />
       </section>
