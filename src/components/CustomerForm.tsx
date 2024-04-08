@@ -1,9 +1,9 @@
 "use client";
 
-import ModalForm from "@/components/ModalForm";
-import { InputProps } from "@nextui-org/react";
 import { useFormState, useFormStatus } from "react-dom";
+import { InputProps } from "@nextui-org/react";
 import { registerCustomer } from "@/actions/customers";
+import ModalForm from "@/components/ModalForm";
 
 const initialState = {
   message: "",
@@ -55,7 +55,7 @@ export default function CustomerForm() {
       inputs={formInputs}
       action={formAction}
       formStatus={pending}
-      message={state.message}
+      message={state?.message}
     />
   );
 }

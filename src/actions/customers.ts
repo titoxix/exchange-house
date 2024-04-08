@@ -26,7 +26,7 @@ const schema = z.object({
     address: z.string(),
 })
 
-export async function registerCustomer(prevState: { message: string },formData: FormData){
+export async function registerCustomer(prevState: { message: string }, formData: FormData){
 
     try {
         const validatedData = schema.safeParse({
@@ -42,11 +42,11 @@ export async function registerCustomer(prevState: { message: string },formData: 
         }
         const data = await createCustomer(validatedData?.data);
 
-        if (!data) {
+        if (!data || data.status !== 201) {
             return { message: "Error al registrar el cliente" };
         }
 
-        revalidatePath("/");
+        revalidatePath("/customers");
         return { message: `Cliente registrado` };
     
       } catch (e) {

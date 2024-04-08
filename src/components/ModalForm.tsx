@@ -50,7 +50,12 @@ export default function ModalForm(props: Props) {
                 </ModalBody>
 
                 <ModalFooter>
-                  <Button color="danger" variant="flat" onPress={onClose}>
+                  <Button
+                    type="reset"
+                    color="danger"
+                    variant="flat"
+                    onPress={onClose}
+                  >
                     Cancelar
                   </Button>
                   <Button
