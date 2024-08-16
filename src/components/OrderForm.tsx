@@ -34,7 +34,7 @@ interface Props {
 export default function OrderForm({ customers }: Props) {
   const [customerIdValue, setCustomerIdValue] = useState<string>();
   const { register, watch, handleSubmit, setValue } = useForm<InputsType>();
-  const { setOpenBackdrop } = useAppContext();
+  const { setOpenBackdrop, setOpenSnackBar } = useAppContext();
 
   const orderTypeSelected = watch("orderType");
 
@@ -53,7 +53,8 @@ export default function OrderForm({ customers }: Props) {
 
   const onSubmit: SubmitHandler<InputsType> = async (formData) => {
     setOpenBackdrop(true);
-    const response = await fetch("api/orders", {
+
+    const { message, status } = await fetch("api/orders", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -66,8 +67,15 @@ export default function OrderForm({ customers }: Props) {
         price: formData.price,
       }),
     }).then((res) => res.json());
+
+    setOpenSnackBar({
+      open: true,
+      message,
+      severity: status === 201 ? "success" : "error",
+    });
     setOpenBackdrop(false);
-    console.log("response client", response);
+    console.log("response client", message);
+    console.log("response client", status);
   };
 
   return (
@@ -75,10 +83,6 @@ export default function OrderForm({ customers }: Props) {
       modalTitle="Nueva Operación"
       openModalButtonTitle="Nueva Operación"
       sendDataButtonTitle="Guardar"
-      //action={formAction}
-      //formStatus={pending}
-      //message={state?.message}
-      //reset={reset}
       onSubmit={handleSubmit(onSubmit)}
     >
       {
@@ -88,7 +92,6 @@ export default function OrderForm({ customers }: Props) {
           variant="bordered"
           label="Cliente"
           placeholder="Buscar por apellido"
-          //selectedKey={value}
           labelPlacement="inside"
           onSelectionChange={(value) => {
             setCustomerIdValue(value as string);
@@ -100,7 +103,6 @@ export default function OrderForm({ customers }: Props) {
               key={customer.id}
               textValue={`${customer.name} ${customer.lastName}`}
               value={customer.id}
-              //onChange={onChange}
             >
               <div className="flex gap-2 items-center">
                 <div className="flex flex-col">

@@ -59,9 +59,9 @@ export default function ModalForm(props: Props) {
                   </Button>
                   <Button
                     type="submit"
-                    //onClick={() => props.reset()}
                     aria-disabled={props.formStatus}
                     color="primary"
+                    onPress={onClose}
                   >
                     {props.sendDataButtonTitle}
                   </Button>

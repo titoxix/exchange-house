@@ -36,7 +36,7 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest): Promise<Response> {
   try {
     const { customerId, type, received, delivered, price } =
       await request.json();
@@ -50,10 +50,10 @@ export async function POST(request: NextRequest) {
     });
 
     if (!validatedData.success) {
-      return NextResponse.json(
-        { error: validatedData.error.errors[0].message },
-        { status: 400 }
-      );
+      return NextResponse.json({
+        message: validatedData.error || "Invalid data",
+        status: 400,
+      });
     }
     const result = await createOrder({
       customerId: validatedData.data.customerId,
@@ -64,19 +64,16 @@ export async function POST(request: NextRequest) {
     });
 
     if (!result) {
-      return NextResponse.json(
-        { error: "Error creating order" },
-        { status: 400 }
-      );
+      return NextResponse.json({
+        message: "Error creating order",
+        status: 400,
+      });
     }
-    return NextResponse.json(
-      { message: "Order created successfully" },
-      { status: 201 }
-    );
+    return NextResponse.json({
+      message: "Order created successfully",
+      status: 201,
+    });
   } catch (error) {
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Internal Server Error", status: 500 });
   }
 }
