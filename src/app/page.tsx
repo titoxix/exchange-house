@@ -66,7 +66,7 @@ export default async function Home() {
       <Divider className="my-4" />
       <section className="flex flex-col gap-4">
         <span className="text-lg font-bold">Últimas operaciones</span>
-        <OrderForm customers={customers} />
+        <OrderForm customers={customers} originalPrice={39.8} />
         <OrdersTable orders={orders} />
       </section>
     </div>

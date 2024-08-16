@@ -20,12 +20,18 @@ interface Props {
   action?: any;
   message?: string;
   children?: React.ReactNode;
-  reset?: () => void;
+  closeModal?: boolean;
   onSubmit?: any;
 }
 
 export default function ModalForm(props: Props) {
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+
+  const dynamicCloseModal = () => {
+    if (props.closeModal) {
+      onOpenChange();
+    }
+  };
 
   return (
     <>
@@ -61,7 +67,7 @@ export default function ModalForm(props: Props) {
                     type="submit"
                     aria-disabled={props.formStatus}
                     color="primary"
-                    onPress={onClose}
+                    onPress={dynamicCloseModal}
                   >
                     {props.sendDataButtonTitle}
                   </Button>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useAppContext } from "@/context";
 import ModalForm from "@/components/ModalForm";
 import {
@@ -29,16 +29,18 @@ const selectOptions = [
 
 interface Props {
   customers: Customer[];
+  originalPrice: number;
 }
 
-export default function OrderForm({ customers }: Props) {
+export default function OrderForm({ customers, originalPrice }: Props) {
   const [customerIdValue, setCustomerIdValue] = useState<string>();
   const { register, watch, handleSubmit, setValue } = useForm<InputsType>();
   const { setOpenBackdrop, setOpenSnackBar } = useAppContext();
+  const [formSendingSuccess, setFormSendingSuccess] = useState(false);
 
   const orderTypeSelected = watch("orderType");
 
-  const calculateDeliveredValue = () => {
+  const calculateDeliveredValue = (inputName: string, inputValue: string) => {
     const received = parseFloat(watch("received"));
     const price = parseFloat(watch("price"));
     let value: number;
@@ -52,6 +54,7 @@ export default function OrderForm({ customers }: Props) {
   };
 
   const onSubmit: SubmitHandler<InputsType> = async (formData) => {
+    console.log(formData);
     setOpenBackdrop(true);
 
     const { message, status } = await fetch("api/orders", {
@@ -68,15 +71,21 @@ export default function OrderForm({ customers }: Props) {
       }),
     }).then((res) => res.json());
 
+    if (status === 201) {
+      setFormSendingSuccess(true);
+    }
+
     setOpenSnackBar({
       open: true,
       message,
       severity: status === 201 ? "success" : "error",
     });
     setOpenBackdrop(false);
-    console.log("response client", message);
-    console.log("response client", status);
   };
+
+  useEffect(() => {
+    setValue("price", originalPrice.toString());
+  }, [originalPrice, setValue]);
 
   return (
     <ModalForm
@@ -84,6 +93,7 @@ export default function OrderForm({ customers }: Props) {
       openModalButtonTitle="Nueva Operación"
       sendDataButtonTitle="Guardar"
       onSubmit={handleSubmit(onSubmit)}
+      closeModal={formSendingSuccess}
     >
       {
         <Autocomplete
@@ -136,6 +146,7 @@ export default function OrderForm({ customers }: Props) {
       }
       {
         <Input
+          name="received"
           type="number"
           label={
             orderTypeSelected === "BUY" || !orderTypeSelected
@@ -146,7 +157,10 @@ export default function OrderForm({ customers }: Props) {
           variant="bordered"
           onChange={(e) => {
             setValue("received", e.target.value);
-            setValue("delivered", calculateDeliveredValue());
+            setValue(
+              "delivered",
+              calculateDeliveredValue("received", e.target.value || "0")
+            );
           }}
           isRequired
           startContent={
@@ -164,11 +178,19 @@ export default function OrderForm({ customers }: Props) {
         <Input
           type="number"
           label="Tipo de cambio"
-          placeholder="Ingrese un monto"
+          name="price"
+          placeholder="0"
           variant="bordered"
-          value="39.80"
+          defaultValue={originalPrice.toString()}
           isRequired
-          {...register("price")}
+          onChange={(e) => {
+            console.log(e.target.value);
+            setValue("price", e.target.value);
+            setValue(
+              "delivered",
+              calculateDeliveredValue("price", e.target.value || "0")
+            );
+          }}
         />
       }
       {
@@ -181,7 +203,7 @@ export default function OrderForm({ customers }: Props) {
               : "Entrega Dolares Americanos"
           }
           placeholder="0"
-          variant="bordered"
+          variant="flat"
           description="Este campo es calculado automáticamente"
           isRequired
           readOnly
