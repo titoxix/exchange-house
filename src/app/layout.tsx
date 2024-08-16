@@ -3,6 +3,8 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "../app/providers";
 import Navbar from "@/components/Navbar";
+import Backdrop from "@/components/Backdrop";
+import { AppProvider } from "@/context";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,12 +21,15 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={inter.className}>
-        <Providers>
-          <div className="flex min-h-screen flex-col items-center">
-            <Navbar />
-            <main className="py-12 w-11/12">{children}</main>
-          </div>
-        </Providers>
+        <AppProvider>
+          <Providers>
+            <div className="flex min-h-screen flex-col items-center">
+              <Navbar />
+              <main className="py-12 w-11/12 z-0">{children}</main>
+              <Backdrop />
+            </div>
+          </Providers>
+        </AppProvider>
       </body>
     </html>
   );

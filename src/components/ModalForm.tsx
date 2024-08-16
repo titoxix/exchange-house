@@ -16,6 +16,8 @@ interface Props {
   openModalButtonTitle: string;
   sendDataButtonTitle: string;
   formStatus?: boolean;
+  inputs?: any;
+  action?: any;
   message?: string;
   children?: React.ReactNode;
   reset?: () => void;
@@ -38,7 +40,7 @@ export default function ModalForm(props: Props) {
                 {props.modalTitle}
               </ModalHeader>
 
-              <form onSubmit={props.onSubmit}>
+              <form action={props?.action} onSubmit={props.onSubmit}>
                 <ModalBody>
                   {props.children}
                   <div>

@@ -16,6 +16,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@nextui-org/react";
+//import Avatar from "@mui/material/Avatar";
 
 export const AcmeLogo = () => (
   <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
@@ -28,13 +29,6 @@ export const AcmeLogo = () => (
   </svg>
 );
 const menuItems = ["Clientes", "Operaciones", "Arqueo", "Salir"];
-
-//TODO: Remove this mock user and use the react context
-const MOCK_USER = {
-  name: "Santiago",
-  lastName: "Saralegui",
-  email: "santi@gmail.com",
-};
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -74,7 +68,7 @@ export default function Navbar() {
         </NavbarItem>
       </NavbarContent>
 
-      <NavbarContent as="div" justify="end">
+      {/* <NavbarContent as="div" justify="end">
         <Dropdown placement="bottom-end">
           <DropdownTrigger>
             <Avatar
@@ -96,7 +90,7 @@ export default function Navbar() {
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
-      </NavbarContent>
+      </NavbarContent> */}
 
       <NavbarMenu>
         {menuItems.map((item, index) => (

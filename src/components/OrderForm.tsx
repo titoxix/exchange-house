@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { useAppContext } from "@/context";
 import ModalForm from "@/components/ModalForm";
 import {
   Autocomplete,
@@ -11,7 +13,6 @@ import {
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Customer } from "@/interfaces/customer";
 import { OrderType } from "@/interfaces/order";
-import { useState } from "react";
 
 type InputsType = {
   customer: string;
@@ -33,6 +34,7 @@ interface Props {
 export default function OrderForm({ customers }: Props) {
   const [customerIdValue, setCustomerIdValue] = useState<string>();
   const { register, watch, handleSubmit, setValue } = useForm<InputsType>();
+  const { setOpenBackdrop } = useAppContext();
 
   const orderTypeSelected = watch("orderType");
 
@@ -50,6 +52,7 @@ export default function OrderForm({ customers }: Props) {
   };
 
   const onSubmit: SubmitHandler<InputsType> = async (formData) => {
+    setOpenBackdrop(true);
     const response = await fetch("api/orders", {
       method: "POST",
       headers: {
@@ -63,7 +66,7 @@ export default function OrderForm({ customers }: Props) {
         price: formData.price,
       }),
     }).then((res) => res.json());
-
+    setOpenBackdrop(false);
     console.log("response client", response);
   };
 
