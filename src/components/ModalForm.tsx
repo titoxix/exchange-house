@@ -8,8 +8,6 @@ import {
   ModalFooter,
   Button,
   useDisclosure,
-  Input,
-  InputProps,
 } from "@nextui-org/react";
 import { PlusIcon } from "@/components/icons/PlusIcon";
 
@@ -17,10 +15,11 @@ interface Props {
   modalTitle: string;
   openModalButtonTitle: string;
   sendDataButtonTitle: string;
-  inputs: InputProps[];
-  action: (formData: FormData) => void;
-  formStatus: boolean;
+  formStatus?: boolean;
   message?: string;
+  children?: React.ReactNode;
+  reset?: () => void;
+  onSubmit?: any;
 }
 
 export default function ModalForm(props: Props) {
@@ -39,11 +38,9 @@ export default function ModalForm(props: Props) {
                 {props.modalTitle}
               </ModalHeader>
 
-              <form action={props.action}>
+              <form onSubmit={props.onSubmit}>
                 <ModalBody>
-                  {props.inputs.map((input, index) => (
-                    <Input key={index} {...input} />
-                  ))}
+                  {props.children}
                   <div>
                     <p>{props.message}</p>
                   </div>
@@ -60,6 +57,7 @@ export default function ModalForm(props: Props) {
                   </Button>
                   <Button
                     type="submit"
+                    //onClick={() => props.reset()}
                     aria-disabled={props.formStatus}
                     color="primary"
                   >

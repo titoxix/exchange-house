@@ -2,20 +2,26 @@ import OrdersTable from "@/components/OrdersTable";
 import PriceCard from "@/components/PriceCard";
 import { Divider } from "@nextui-org/react";
 import { getAllOrders } from "@/server/orders";
+import { getCustomers } from "@/server/customers";
 import { Order } from "@/interfaces/order";
+import OrderForm from "@/components/OrderForm";
+import { Customer } from "@/interfaces/customer";
 
-async function getInitData(): Promise<{ orders: Order[] }> {
-  const { status, data: orders } = await getAllOrders();
+async function getInitData(): Promise<{
+  orders: Order[];
+  customers: Customer[];
+}> {
+  const { status: statusOrders, data: orders } = await getAllOrders();
+  const { status: statusCustomers, data: customers } = await getCustomers();
 
-  if (status !== 200) return { orders: [] };
-
-  if (orders) return { orders };
-
-  return { orders: [] };
+  return {
+    orders: statusOrders === 200 ? orders : [],
+    customers: statusCustomers === 200 ? customers : [],
+  };
 }
 
 export default async function Home() {
-  const { orders } = await getInitData();
+  const { orders, customers } = await getInitData();
 
   return (
     <div className="">
@@ -60,6 +66,7 @@ export default async function Home() {
       <Divider className="my-4" />
       <section className="flex flex-col gap-4">
         <span className="text-lg font-bold">Últimas operaciones</span>
+        <OrderForm customers={customers} />
         <OrdersTable orders={orders} />
       </section>
     </div>
