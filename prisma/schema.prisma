@@ -16,7 +16,7 @@ datasource db {
 model Customers {
   idAuto    Int      @id @default(autoincrement())
   id        String   @unique
-  email     String?  @unique
+  email     String?
   name      String
   lastName  String
   phone     String?

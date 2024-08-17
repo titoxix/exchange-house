@@ -16,7 +16,6 @@ interface Props {
   openModalButtonTitle: string;
   sendDataButtonTitle: string;
   formStatus?: boolean;
-  inputs?: any;
   action?: any;
   message?: string;
   children?: React.ReactNode;

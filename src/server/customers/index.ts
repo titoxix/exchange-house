@@ -88,12 +88,7 @@ export const createCustomer = async ({
     });
 
     if (!newCustomer) {
-      return {
-        status: 500,
-        error: "Internal Server Error",
-        message: "An error occurred while trying to create a new customer",
-        data: null,
-      };
+      throw new Error("Error to save customer");
     }
 
     return {
@@ -110,12 +105,7 @@ export const createCustomer = async ({
       },
     };
   } catch (error) {
-    console.log(error);
-    return {
-      status: 500,
-      error: "Internal Server Error",
-      message: "An error occurred while trying to create a new customer",
-      data: null,
-    };
+    console.error(error);
+    throw error;
   }
 };
