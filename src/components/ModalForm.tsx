@@ -22,14 +22,22 @@ interface Props {
   children?: React.ReactNode;
   closeModal?: boolean;
   onSubmit?: any;
+  resetForm?: () => void;
 }
 
 export default function ModalForm(props: Props) {
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const dynamicCloseModal = () => {
     if (props.closeModal) {
       onOpenChange();
+    }
+  };
+
+  const onClose = () => {
+    onOpenChange();
+    if (props.resetForm) {
+      props.resetForm();
     }
   };
 
@@ -38,9 +46,14 @@ export default function ModalForm(props: Props) {
       <Button onPress={onOpen} color="primary" endContent={<PlusIcon />}>
         {props.openModalButtonTitle}
       </Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center">
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        placement="top-center"
+        hideCloseButton
+      >
         <ModalContent>
-          {(onClose) => (
+          {() => (
             <>
               <ModalHeader className="flex flex-col gap-1">
                 {props.modalTitle}

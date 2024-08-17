@@ -40,7 +40,7 @@ export default function OrderForm({ customers, originalPrice }: Props) {
 
   const orderTypeSelected = watch("orderType");
 
-  const calculateDeliveredValue = (inputName: string, inputValue: string) => {
+  const calculateDeliveredValue = () => {
     const received = parseFloat(watch("received"));
     const price = parseFloat(watch("price"));
     let value: number;
@@ -83,6 +83,14 @@ export default function OrderForm({ customers, originalPrice }: Props) {
     setOpenBackdrop(false);
   };
 
+  const resetForm = () => {
+    setValue("customer", "");
+    setValue("orderType", "BUY");
+    setValue("received", "");
+    setValue("delivered", "");
+    setValue("price", originalPrice.toString());
+  };
+
   useEffect(() => {
     setValue("price", originalPrice.toString());
   }, [originalPrice, setValue]);
@@ -94,6 +102,7 @@ export default function OrderForm({ customers, originalPrice }: Props) {
       sendDataButtonTitle="Guardar"
       onSubmit={handleSubmit(onSubmit)}
       closeModal={formSendingSuccess}
+      resetForm={resetForm}
     >
       {
         <Autocomplete
@@ -130,12 +139,16 @@ export default function OrderForm({ customers, originalPrice }: Props) {
       }
       {
         <Select
+          name="orderType"
           label="Tipo de Operación"
           variant="bordered"
           defaultSelectedKeys={["BUY"]}
-          placeholder="Tipo"
           isRequired
-          {...register("orderType")}
+          onChange={(e) => {
+            setValue("orderType", e.target.value as OrderType);
+            setValue("received", "");
+            setValue("delivered", "");
+          }}
         >
           {(selectOptions || []).map((opt) => (
             <SelectItem key={opt.value} value={opt.value}>
@@ -155,12 +168,10 @@ export default function OrderForm({ customers, originalPrice }: Props) {
           }
           placeholder="0"
           variant="bordered"
+          value={watch("received")}
           onChange={(e) => {
             setValue("received", e.target.value);
-            setValue(
-              "delivered",
-              calculateDeliveredValue("received", e.target.value || "0")
-            );
+            setValue("delivered", calculateDeliveredValue());
           }}
           isRequired
           startContent={
@@ -184,12 +195,8 @@ export default function OrderForm({ customers, originalPrice }: Props) {
           defaultValue={originalPrice.toString()}
           isRequired
           onChange={(e) => {
-            console.log(e.target.value);
             setValue("price", e.target.value);
-            setValue(
-              "delivered",
-              calculateDeliveredValue("price", e.target.value || "0")
-            );
+            setValue("delivered", calculateDeliveredValue());
           }}
         />
       }
