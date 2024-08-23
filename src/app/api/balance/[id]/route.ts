@@ -1,11 +1,12 @@
 import { NextResponse, NextRequest } from "next/server";
+import { closeBalance } from "@/server/balance";
 import prisma from "@/libs/prisma";
 
 interface Params {
   params: { id: string };
 }
 
-export async function GET(request: NextRequest, { params }: Params) {
+/* export async function GET(request: NextRequest, { params }: Params) {
   const { id } = params;
 
   if (!id) {
@@ -31,10 +32,11 @@ export async function GET(request: NextRequest, { params }: Params) {
       { status: 500 }
     );
   }
-}
+} */
 
-export async function PUT(request: NextRequest, { params }: Params) {
-    const { pesosInitialAmount, usdInitialAmount, pesosAmount, usdAmount } = await request.json();
+/* export async function PUT(request: NextRequest, { params }: Params) {
+  const { pesosInitialAmount, usdInitialAmount, pesosAmount, usdAmount } =
+    await request.json();
 
   const { id } = params;
 
@@ -61,4 +63,4 @@ export async function PUT(request: NextRequest, { params }: Params) {
       { status: 500 }
     );
   }
-}
+} */

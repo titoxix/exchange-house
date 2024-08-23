@@ -14,6 +14,9 @@ import { PlusIcon } from "@/components/icons/PlusIcon";
 interface Props {
   modalTitle: string;
   openModalButtonTitle: string;
+  openModalButtonIcon?: React.ReactNode;
+  openModalButtonColor?: string;
+  openModalButtonDisable?: boolean;
   sendDataButtonTitle: string;
   formStatus?: boolean;
   action?: any;
@@ -42,9 +45,15 @@ export default function ModalForm(props: Props) {
 
   return (
     <>
-      <Button onPress={onOpen} color="primary" endContent={<PlusIcon />}>
+      <Button
+        onPress={onOpen}
+        color="primary"
+        isDisabled={props.openModalButtonDisable || false}
+        endContent={<PlusIcon />}
+      >
         {props.openModalButtonTitle}
       </Button>
+
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}

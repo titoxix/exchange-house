@@ -28,7 +28,7 @@ export const AcmeLogo = () => (
     />
   </svg>
 );
-const menuItems = ["Clientes", "Operaciones", "Arqueo", "Salir"];
+const menuItems = ["Clientes", "Operaciones", "Caja", "Salir"];
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -62,8 +62,8 @@ export default function Navbar() {
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link color="foreground" href="#">
-            Arqueo
+          <Link color="foreground" href="/balance">
+            Caja
           </Link>
         </NavbarItem>
       </NavbarContent>

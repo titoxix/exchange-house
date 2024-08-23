@@ -54,7 +54,6 @@ export default function OrderForm({ customers, originalPrice }: Props) {
   };
 
   const onSubmit: SubmitHandler<InputsType> = async (formData) => {
-    console.log(formData);
     setOpenBackdrop(true);
 
     const { message, status } = await fetch("api/orders", {
