@@ -1,7 +1,7 @@
 import prisma from "@/libs/prisma";
 import { Orders } from "@prisma/client";
 
-export const getOrders = async () => {
+const getOrders = async () => {
   try {
     const orders = await prisma.orders.findMany({
       include: {
@@ -16,7 +16,7 @@ export const getOrders = async () => {
   }
 };
 
-export const saveOrder = async (
+const saveOrder = async (
   order: Omit<Orders, "idAuto" | "updatedAt" | "createdAt">
 ): Promise<Orders> => {
   try {
@@ -37,3 +37,10 @@ export const saveOrder = async (
     throw error;
   }
 };
+
+const orders = {
+  getOrders,
+  saveOrder,
+};
+
+export default orders;

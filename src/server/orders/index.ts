@@ -1,4 +1,4 @@
-import { getOrders, saveOrder } from "@/db/orders";
+import OrdersDB from "@/db/orders";
 import { Order } from "@/interfaces/order";
 import { getCustomerByGeneratedId } from "../customers";
 import { v4 as uuidv4 } from "uuid";
@@ -12,7 +12,7 @@ interface Response {
 
 export const getAllOrders = async (): Promise<Response> => {
   try {
-    const orders = await getOrders();
+    const orders = await OrdersDB.getOrders();
 
     if (!orders) {
       return { message: "No se encontrarón resultados", status: 404, data: [] };
@@ -53,7 +53,7 @@ export const createOrder = async ({
 
     if (!customer) throw new Error("Customer not found");
 
-    const newOrderResult = await saveOrder({
+    const newOrderResult = await OrdersDB.saveOrder({
       id: generatedId,
       type,
       pesoAmount: type === "BUY" ? parseFloat(delivered) : parseFloat(received),

@@ -6,22 +6,36 @@ import { getCustomers } from "@/server/customers";
 import { Order } from "@/interfaces/order";
 import OrderForm from "@/components/OrderForm";
 import { Customer } from "@/interfaces/customer";
+import { getBalanceOpenedByDate } from "@/server/balance";
+import { getCurrentDate } from "@/utils/dates";
 
 async function getInitData(): Promise<{
   orders: Order[];
   customers: Customer[];
+  isBalanceOpened: boolean;
 }> {
-  const { status: statusOrders, data: orders } = await getAllOrders();
-  const { status: statusCustomers, data: customers } = await getCustomers();
+  try {
+    const { status: statusOrders, data: orders } = await getAllOrders();
+    const { status: statusCustomers, data: customers } = await getCustomers();
+    const currentDate = getCurrentDate("yyyy-mm-dd");
+    const balanceDayResult = await getBalanceOpenedByDate(currentDate);
 
-  return {
-    orders: statusOrders === 200 ? orders : [],
-    customers: statusCustomers === 200 ? customers : [],
-  };
+    return {
+      orders: statusOrders === 200 ? orders : [],
+      customers: statusCustomers === 200 ? customers : [],
+      isBalanceOpened: !!balanceDayResult,
+    };
+  } catch (error) {
+    return {
+      orders: [],
+      customers: [],
+      isBalanceOpened: false,
+    };
+  }
 }
 
 export default async function Home() {
-  const { orders, customers } = await getInitData();
+  const { orders, customers, isBalanceOpened } = await getInitData();
 
   return (
     <div className="">
@@ -66,7 +80,11 @@ export default async function Home() {
       <Divider className="my-4" />
       <section className="flex flex-col gap-4">
         <span className="text-lg font-bold">Últimas operaciones</span>
-        <OrderForm customers={customers} originalPrice={39.8} />
+        <OrderForm
+          customers={customers}
+          originalPrice={39.8}
+          isBalanceOpened={isBalanceOpened}
+        />
         <OrdersTable orders={orders} />
       </section>
     </div>

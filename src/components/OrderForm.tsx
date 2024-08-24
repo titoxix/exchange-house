@@ -30,9 +30,14 @@ const selectOptions = [
 interface Props {
   customers: Customer[];
   originalPrice: number;
+  isBalanceOpened: boolean;
 }
 
-export default function OrderForm({ customers, originalPrice }: Props) {
+export default function OrderForm({
+  customers,
+  originalPrice,
+  isBalanceOpened,
+}: Props) {
   const [customerIdValue, setCustomerIdValue] = useState<string>();
   const { register, watch, handleSubmit, setValue } = useForm<InputsType>();
   const { setOpenBackdrop, setOpenSnackBar } = useAppContext();
@@ -102,6 +107,7 @@ export default function OrderForm({ customers, originalPrice }: Props) {
       onSubmit={handleSubmit(onSubmit)}
       closeModal={formSendingSuccess}
       resetForm={resetForm}
+      openModalButtonDisable={!isBalanceOpened}
     >
       {
         <Autocomplete
