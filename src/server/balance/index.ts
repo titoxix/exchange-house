@@ -2,6 +2,15 @@ import BalanceDB from "@/db/balance";
 import { Balance } from "@/interfaces/balance";
 import { v4 as uuidv4 } from "uuid";
 
+export const getBalanceById = async (id: string) => {
+  try {
+    return await BalanceDB.getBalanceById(id);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
 export const getBalanceOpenedByDate = async (date: string) => {
   try {
     return await BalanceDB.getBalanceOpenedByDate(date);

@@ -9,4 +9,5 @@ export interface Order {
   usdAmount: number | null;
   customerId?: string;
   customerName?: string;
+  balanceId: string;
 }

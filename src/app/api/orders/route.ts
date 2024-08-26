@@ -2,6 +2,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { OrderType } from "@/interfaces/order";
 import { getAllOrders, createOrder } from "@/server/orders";
 import { z } from "zod";
+import { revalidatePath } from "next/cache";
 
 const schema = z.object({
   customerId: z.string({
@@ -38,7 +39,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest): Promise<Response> {
   try {
-    const { customerId, type, received, delivered, price } =
+    const { customerId, type, received, delivered, price, balanceId } =
       await request.json();
 
     const validatedData = schema.safeParse({
@@ -61,6 +62,7 @@ export async function POST(request: NextRequest): Promise<Response> {
       received: validatedData.data.received,
       delivered: validatedData.data.delivered,
       price: validatedData.data.price,
+      balanceId,
     });
 
     if (!result) {
@@ -69,6 +71,7 @@ export async function POST(request: NextRequest): Promise<Response> {
         status: 400,
       });
     }
+
     return NextResponse.json({
       message: "Order created successfully",
       status: 201,

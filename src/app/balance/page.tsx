@@ -14,8 +14,8 @@ async function getData(): Promise<Balance | null> {
     }
     return {
       id: balanceDayResult.id,
-      pesosAmount: balanceDayResult.pesosAmount || 0,
-      usdAmount: balanceDayResult.usdAmount || 0,
+      pesosAmount: balanceDayResult.pesosAmount,
+      usdAmount: balanceDayResult.usdAmount,
       pesosInitialAmount: balanceDayResult.pesosInitialAmount || 0,
       usdInitialAmount: balanceDayResult.usdInitialAmount || 0,
       state: balanceDayResult.state,

@@ -31,24 +31,27 @@ model Orders {
   id         String    @unique
   type       OrderType
   price      Float
-  usdAmount  Float?
-  pesoAmount Float?
+  usdAmount  Float
+  pesoAmount Float
   customer   Customers @relation(fields: [customerId], references: [idAuto])
+  balance    Balance   @relation(fields: [balanceId], references: [idAuto])
+  balanceId  Int
   customerId Int
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 }
 
-model CashAudits {
-  idAuto             Int            @id @default(autoincrement())
-  id                 String         @unique
+model Balance {
+  idAuto             Int          @id @default(autoincrement())
+  id                 String       @unique
   usdInitialAmount   Float
   pesosInitialAmount Float
-  usdAmount          Float?
-  pesosAmount        Float?
-  state              CashAuditState
-  createdAt          DateTime       @default(now())
-  updatedAt          DateTime       @updatedAt
+  usdAmount          Float
+  pesosAmount        Float
+  state              BalanceState
+  orders             Orders[]
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
 }
 
 model Prices {
@@ -98,7 +101,7 @@ enum OrderType {
   SELL
 }
 
-enum CashAuditState {
+enum BalanceState {
   OPEN
   CLOSED
 }

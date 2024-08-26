@@ -1,10 +1,10 @@
 import prisma from "@/libs/prisma";
-import { CashAudits } from "@prisma/client";
+import { Balance } from "@prisma/client";
 import { getCurrentDate } from "@/utils/dates";
 
 const getAllsBalances = async () => {
   try {
-    const balancesInformation = await prisma.cashAudits.findMany();
+    const balancesInformation = await prisma.balance.findMany();
 
     return balancesInformation;
   } catch (error) {
@@ -12,9 +12,23 @@ const getAllsBalances = async () => {
   }
 };
 
+const getBalanceById = async (id: string) => {
+  try {
+    const balanceInformation = await prisma.balance.findFirst({
+      where: {
+        id,
+      },
+    });
+
+    return balanceInformation;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const getBalanceOpenedByDate = async (date: string) => {
   try {
-    const balanceInformation = await prisma.cashAudits.findFirst({
+    const balanceInformation = await prisma.balance.findFirst({
       where: {
         createdAt: {
           gte: new Date(date), // date in format yyyy-mm-dd
@@ -30,10 +44,10 @@ const getBalanceOpenedByDate = async (date: string) => {
 };
 
 const saveNewBalance = async (
-  balance: Omit<CashAudits, "idAuto" | "updatedAt" | "createdAt">
+  balance: Omit<Balance, "idAuto" | "updatedAt" | "createdAt">
 ) => {
   try {
-    const balanceInformation = await prisma.cashAudits.create({
+    const balanceInformation = await prisma.balance.create({
       data: balance,
     });
 
@@ -44,12 +58,12 @@ const saveNewBalance = async (
 };
 
 const update = async (
-  balance: Omit<CashAudits, "idAuto" | "updatedAt" | "createdAt">
+  balance: Omit<Balance, "idAuto" | "updatedAt" | "createdAt">
 ) => {
   const { id, usdAmount, pesosAmount, state } = balance;
   try {
     const currentDate = getCurrentDate("yyyy-mm-dd");
-    const balanceInformation = await prisma.cashAudits.update({
+    const balanceInformation = await prisma.balance.update({
       where: {
         id,
       },
@@ -68,6 +82,7 @@ const update = async (
 };
 
 const balance = {
+  getBalanceById,
   getAllsBalances,
   getBalanceOpenedByDate,
   saveNewBalance,

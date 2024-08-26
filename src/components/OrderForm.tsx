@@ -31,12 +31,14 @@ interface Props {
   customers: Customer[];
   originalPrice: number;
   isBalanceOpened: boolean;
+  balanceId: string;
 }
 
 export default function OrderForm({
   customers,
   originalPrice,
   isBalanceOpened,
+  balanceId,
 }: Props) {
   const [customerIdValue, setCustomerIdValue] = useState<string>();
   const { register, watch, handleSubmit, setValue } = useForm<InputsType>();
@@ -72,6 +74,7 @@ export default function OrderForm({
         received: formData.received,
         delivered: formData.delivered,
         price: formData.price,
+        balanceId,
       }),
     }).then((res) => res.json());
 

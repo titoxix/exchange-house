@@ -31,9 +31,15 @@ interface Props {
     | JSX.Element[]
     | null
     | undefined;
+  emptyStateMessage?: string;
 }
 
-export default function Table({ columns, items, cellConfiguration }: Props) {
+export default function Table({
+  columns,
+  items,
+  cellConfiguration,
+  emptyStateMessage,
+}: Props) {
   const renderCell = React.useCallback(
     (item: Item, columnKey: any) => {
       const cellValue = item[columnKey];
@@ -46,7 +52,7 @@ export default function Table({ columns, items, cellConfiguration }: Props) {
   );
 
   return (
-    <NextUITable aria-label="Table with last ordes">
+    <NextUITable isStriped aria-label="Table with last ordes">
       <TableHeader columns={columns}>
         {(column) => (
           <TableColumn
@@ -57,7 +63,7 @@ export default function Table({ columns, items, cellConfiguration }: Props) {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody items={items}>
+      <TableBody emptyContent={emptyStateMessage} items={items}>
         {(item) => (
           <TableRow key={item.id as string}>
             {(columnKey) => (

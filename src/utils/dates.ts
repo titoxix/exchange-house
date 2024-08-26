@@ -8,10 +8,16 @@ type DateFormat = "dd-mm-yyyy" | "yyyy-mm-dd";
 export const getCurrentDate = (format: DateFormat): string => {
   const currentDate = new Date();
   const day = currentDate.getUTCDate();
-  const month = currentDate.getUTCMonth() + 1;
+  let month = currentDate.getUTCMonth() + 1;
   const year = currentDate.getUTCFullYear();
 
-  if (format === "dd-mm-yyyy") return `${day}-${month}-${year}`;
+  let monthString = day.toString();
 
-  return `${year}-${month}-${day}`;
+  if (month < 10) {
+    monthString = `0${month}`;
+  }
+
+  if (format === "dd-mm-yyyy") return `${day}-${monthString}-${year}`;
+
+  return `${year}-${monthString}-${day}`;
 };

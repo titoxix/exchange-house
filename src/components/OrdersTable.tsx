@@ -1,7 +1,9 @@
+"use client";
+
 import Table, { Item } from "@/components/table/Table";
 import { EditIcon } from "./icons/EditIcon";
 import { EyeIcon } from "./icons/EyeIcon";
-import { Tooltip } from "@nextui-org/react";
+import { Chip, ChipProps, Tooltip } from "@nextui-org/react";
 import { Order } from "@/interfaces/order";
 
 const columns = [
@@ -12,16 +14,22 @@ const columns = [
   { name: "MONTO DOLARES", uid: "usdAmount" },
   { name: "MONTO PESOS", uid: "pesosAmount" },
   { name: "CLIENTE", uid: "customerName" },
-  // { name: "ACTIONS", uid: "actions" },
+  //{ name: "ACCIONES", uid: "actions" },
 ];
 
 interface Props {
   orders: Order[];
 }
+
+const statusColorMap: Record<string, ChipProps["color"]> = {
+  BUY: "success",
+  SELL: "warning",
+};
+
 export default function OrdersTable({ orders }: Props) {
-  /* const cellConfiguration = (cellValue: string, columnKey: string) => {
+  const cellConfiguration = (cellValue: string, columnKey: string) => {
     switch (columnKey) {
-      case "actions":
+      /*  case "actions":
         return (
           <div className="relative flex items-center gap-2">
             <Tooltip content="Detalles">
@@ -35,16 +43,33 @@ export default function OrdersTable({ orders }: Props) {
               </span>
             </Tooltip>
           </div>
+        ); */
+      case "type":
+        console.log(cellValue);
+        return (
+          <Chip
+            className="capitalize"
+            color={statusColorMap[cellValue]}
+            size="sm"
+            variant="flat"
+          >
+            {cellValue === "BUY" ? "COMPRA" : "VENTA"}
+          </Chip>
         );
+      case "usdAmount":
+        return <p>{`USD ${Number(cellValue).toFixed(2)}`}</p>;
+      case "pesosAmount":
+        return <p>{`$U ${cellValue}`}</p>;
       default:
         return cellValue;
     }
-  }; */
+  };
   return (
     <Table
       columns={columns}
       items={orders}
-      //cellConfiguration={cellConfiguration}
+      cellConfiguration={cellConfiguration}
+      emptyStateMessage="No hay órdenes para mostrar"
     />
   );
 }

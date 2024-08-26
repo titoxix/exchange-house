@@ -1,7 +1,7 @@
 import OrdersTable from "@/components/OrdersTable";
 import PriceCard from "@/components/PriceCard";
 import { Divider } from "@nextui-org/react";
-import { getAllOrders } from "@/server/orders";
+import { getOrdersByDate } from "@/server/orders";
 import { getCustomers } from "@/server/customers";
 import { Order } from "@/interfaces/order";
 import OrderForm from "@/components/OrderForm";
@@ -13,29 +13,35 @@ async function getInitData(): Promise<{
   orders: Order[];
   customers: Customer[];
   isBalanceOpened: boolean;
+  balanceId: string;
 }> {
   try {
-    const { status: statusOrders, data: orders } = await getAllOrders();
-    const { status: statusCustomers, data: customers } = await getCustomers();
     const currentDate = getCurrentDate("yyyy-mm-dd");
+    const { status: statusOrders, data: orders } = await getOrdersByDate(
+      currentDate
+    );
+    const { status: statusCustomers, data: customers } = await getCustomers();
     const balanceDayResult = await getBalanceOpenedByDate(currentDate);
 
     return {
       orders: statusOrders === 200 ? orders : [],
       customers: statusCustomers === 200 ? customers : [],
       isBalanceOpened: !!balanceDayResult,
+      balanceId: balanceDayResult?.id || "",
     };
   } catch (error) {
     return {
       orders: [],
       customers: [],
       isBalanceOpened: false,
+      balanceId: "",
     };
   }
 }
 
 export default async function Home() {
-  const { orders, customers, isBalanceOpened } = await getInitData();
+  const { orders, customers, isBalanceOpened, balanceId } = await getInitData();
+  const currentDate = getCurrentDate("dd-mm-yyyy");
 
   return (
     <div className="">
@@ -79,11 +85,12 @@ export default async function Home() {
       </section>
       <Divider className="my-4" />
       <section className="flex flex-col gap-4">
-        <span className="text-lg font-bold">Últimas operaciones</span>
+        <span className="text-lg font-bold">{`Operaciones del día: ${currentDate}`}</span>
         <OrderForm
           customers={customers}
           originalPrice={39.8}
           isBalanceOpened={isBalanceOpened}
+          balanceId={balanceId}
         />
         <OrdersTable orders={orders} />
       </section>
