@@ -45,7 +45,6 @@ export default function OrdersTable({ orders }: Props) {
           </div>
         ); */
       case "type":
-        console.log(cellValue);
         return (
           <Chip
             className="capitalize"

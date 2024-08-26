@@ -13,6 +13,7 @@ import {
 import { useForm, SubmitHandler } from "react-hook-form";
 import { Customer } from "@/interfaces/customer";
 import { OrderType } from "@/interfaces/order";
+import { customRevalidateTag } from "@/actions/revalidateTag";
 
 type InputsType = {
   customer: string;
@@ -41,7 +42,11 @@ export default function OrderForm({
   balanceId,
 }: Props) {
   const [customerIdValue, setCustomerIdValue] = useState<string>();
-  const { register, watch, handleSubmit, setValue } = useForm<InputsType>();
+  const { register, watch, handleSubmit, setValue } = useForm<InputsType>({
+    defaultValues: {
+      orderType: "BUY",
+    },
+  });
   const { setOpenBackdrop, setOpenSnackBar } = useAppContext();
   const [formSendingSuccess, setFormSendingSuccess] = useState(false);
 
@@ -81,7 +86,7 @@ export default function OrderForm({
     if (status === 201) {
       setFormSendingSuccess(true);
     }
-
+    customRevalidateTag("/");
     setOpenSnackBar({
       open: true,
       message,

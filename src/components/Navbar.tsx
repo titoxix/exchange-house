@@ -57,7 +57,7 @@ export default function Navbar() {
           </Link>
         </NavbarItem>
         <NavbarItem isActive>
-          <Link href="#" aria-current="page">
+          <Link href="/transactions" aria-current="page">
             Operaciones
           </Link>
         </NavbarItem>

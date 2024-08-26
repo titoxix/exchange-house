@@ -41,7 +41,7 @@ export const getCustomers = async (
 
     return { message: "OK", status: 200, data: adaptedCustomers };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return { error: "Error to get data from DB", status: 500, data: [] };
   }
 };

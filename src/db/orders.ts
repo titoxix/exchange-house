@@ -12,8 +12,7 @@ const getOrders = async (withCustomer: boolean = false) => {
 
     return orders;
   } catch (error) {
-    console.log(error);
-    return null;
+    throw error;
   }
 };
 
@@ -44,7 +43,6 @@ const saveOrder = async (
   order: Omit<Orders, "idAuto" | "updatedAt" | "createdAt">
 ): Promise<Orders> => {
   try {
-    console.log("orderDB", order);
     const newOrder = await prisma.orders.create({
       data: {
         id: order.id,

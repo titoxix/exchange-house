@@ -7,8 +7,7 @@ export const getAlls = async () => {
 
     return customers;
   } catch (error) {
-    console.log(error);
-    return null;
+    throw error;
   }
 };
 
@@ -22,8 +21,7 @@ export const getCustomerById = async (id: string) => {
 
     return customer;
   } catch (error) {
-    console.error(error);
-    return null;
+    throw error;
   }
 };
 
@@ -44,7 +42,6 @@ export const saveCustomer = async (
 
     return newCustomer;
   } catch (error) {
-    console.error(error);
     throw error;
   }
 };

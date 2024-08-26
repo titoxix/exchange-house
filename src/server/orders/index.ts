@@ -36,7 +36,7 @@ export const getAllOrders = async (): Promise<Response> => {
 
     return { message: "OK", status: 200, data: adaptedOrders };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return { error: "Error to get data from DB", status: 500, data: [] };
   }
 };
@@ -66,26 +66,21 @@ export const getOrdersByDate = async (date: string): Promise<Response> => {
 
     return { message: "OK", status: 200, data: adaptedOrders };
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return { error: "Ocurrio un error inesperado", status: 500, data: [] };
   }
 };
 
 export const createOrder = async ({
-  customerId,
+  customer,
   type,
   received,
   delivered,
   price,
-  balanceId,
+  balance,
 }: any) => {
   try {
     const generatedId = uuidv4();
-
-    const customer = await getCustomerByGeneratedId(customerId);
-    const balance = await getBalanceById(balanceId);
-
-    if (!customer) throw new Error("Customer not found");
 
     const newOrderResult = await OrdersDB.saveOrder({
       id: generatedId,
@@ -112,12 +107,11 @@ export const createOrder = async ({
           ? balance.pesosAmount - newOrderResult.pesoAmount
           : balance.pesosAmount + newOrderResult.pesoAmount;
 
-      const updatedBalance = await updateBalance({
+      await updateBalance({
         ...balance,
         usdAmount,
         pesosAmount,
       });
-      console.log("updatedBalance", updatedBalance);
     }
 
     return newOrderResult;

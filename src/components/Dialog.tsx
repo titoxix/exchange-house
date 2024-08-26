@@ -46,12 +46,7 @@ export default function Dialog(props: Props) {
       >
         {props.openButtonTitle}
       </Button>
-      <Modal
-        isOpen={isOpen}
-        onOpenChange={onOpenChange}
-        isDismissable={false}
-        //onClose={props.closeDialog ? onClose : undefined}
-      >
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false}>
         <ModalContent>
           {(onClose) => (
             <>
