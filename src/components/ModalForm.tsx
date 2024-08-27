@@ -30,10 +30,8 @@ interface Props {
 export default function ModalForm(props: Props) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const dynamicCloseModal = () => {
-    if (props.closeModal) {
-      onOpenChange();
-    }
+  const handleOnPress = () => {
+    onOpenChange();
   };
 
   const onClose = () => {
@@ -88,7 +86,7 @@ export default function ModalForm(props: Props) {
                     type="submit"
                     aria-disabled={props.formStatus}
                     color="primary"
-                    onPress={dynamicCloseModal}
+                    onPress={handleOnPress}
                   >
                     {props.sendDataButtonTitle}
                   </Button>

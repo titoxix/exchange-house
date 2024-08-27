@@ -99,6 +99,7 @@ export async function PUT(request: NextRequest) {
       usdInitialAmount,
       state,
     } = await request.json();
+
     const usdInitialAmountFloat = parseFloat(usdInitialAmount);
     const pesosInitialAmountFloat = parseFloat(pesosInitialAmount);
     const usdAmountFloat = parseFloat(usdAmount);

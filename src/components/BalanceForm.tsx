@@ -6,10 +6,12 @@ import ModalForm from "./ModalForm";
 import { Input } from "@nextui-org/react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { customRevalidateTag } from "@/actions/revalidateTag";
+import { Balance } from "@/interfaces/balance";
 
 interface Props {
   operation: "dollars" | "pesos" | "both";
   balanceOpened?: boolean;
+  balance?: Balance | null;
 }
 
 const modalButtonTitle = {
@@ -32,14 +34,57 @@ type InputsType = {
 export default function BalanceForm({
   operation,
   balanceOpened = false,
+  balance,
 }: Props) {
   const { setOpenBackdrop, setOpenSnackBar } = useAppContext();
   const [formSendingSuccess, setFormSendingSuccess] = useState(false);
   const { register, handleSubmit } = useForm<InputsType>();
 
+  const calculateNewAmount = (amount: number, balanceAmount: number) => {
+    const result = Number(balanceAmount) + Number(amount);
+    return result;
+  };
+
+  const updateBalance = async (formData: InputsType) => {
+    const { dollars, pesos } = formData;
+
+    const { message, status } = await fetch("api/balance", {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        id: balance?.id,
+        usdInitialAmount: balance?.usdInitialAmount,
+        pesosInitialAmount: balance?.pesosInitialAmount,
+        usdAmount:
+          operation === "dollars"
+            ? calculateNewAmount(dollars, balance?.usdAmount || 0)
+            : balance?.usdAmount,
+        pesosAmount:
+          operation === "pesos"
+            ? calculateNewAmount(pesos, balance?.pesosAmount || 0)
+            : balance?.pesosAmount,
+        state: balance?.state,
+      }),
+      next: { tags: ["balance"] },
+    }).then((res) => res.json());
+
+    customRevalidateTag("balance");
+    setOpenSnackBar({
+      open: true,
+      message,
+      severity: status === 204 ? "success" : "error",
+    });
+  };
+
   const onSubmit: SubmitHandler<InputsType> = async (formData) => {
     const { dollars, pesos } = formData;
 
+    if (operation !== "both" && balance) {
+      updateBalance(formData);
+      return;
+    }
     if (
       (!dollars && !pesos) ||
       (dollars.toString() === "0" && pesos.toString() === "0")
@@ -79,6 +124,7 @@ export default function BalanceForm({
     });
     setOpenBackdrop(false);
   };
+
   return (
     <ModalForm
       modalTitle={modalTitle[operation]}

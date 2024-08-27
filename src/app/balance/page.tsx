@@ -47,12 +47,20 @@ export default async function BalancePage() {
         <div className="flex gap-3">
           <p>Dolares:</p>
           <p>USD</p> <p>{balance?.usdAmount || 0}</p>
-          <BalanceForm operation="dollars" balanceOpened={!!!balance} />
+          <BalanceForm
+            operation="dollars"
+            balanceOpened={!!!balance}
+            balance={balance}
+          />
         </div>
         <div className="flex gap-3">
           <p>Pesos:</p>
           <p>UYU</p> <p>{balance?.pesosAmount || 0}</p>
-          <BalanceForm operation="pesos" balanceOpened={!!!balance} />
+          <BalanceForm
+            operation="pesos"
+            balanceOpened={!!!balance}
+            balance={balance}
+          />
         </div>
         <BalanceForm operation="both" balanceOpened={!!balance} />
         <CloseBalance balance={balance} />
