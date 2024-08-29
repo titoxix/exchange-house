@@ -30,11 +30,6 @@ interface Props {
 export default function ModalForm(props: Props) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const handleSubmit = () => {
-    props.onSubmit();
-    onOpenChange();
-  };
-
   const onClose = () => {
     onOpenChange();
     if (props.resetForm) {
@@ -66,7 +61,7 @@ export default function ModalForm(props: Props) {
                 {props.modalTitle}
               </ModalHeader>
 
-              <form action={props?.action} onSubmit={handleSubmit}>
+              <form action={props?.action} onSubmit={props.onSubmit}>
                 <ModalBody>
                   {props.children}
                   <div>

@@ -1,8 +1,8 @@
 import OrdersDB from "@/db/orders";
+import { foundsAvailable } from "@/server/balance";
 import { Order } from "@/interfaces/order";
-import { getCustomerByGeneratedId } from "../customers";
 import { v4 as uuidv4 } from "uuid";
-import { getBalanceById, updateBalance } from "../balance";
+import { updateBalance } from "../balance";
 
 interface Response {
   error?: string;
@@ -81,6 +81,12 @@ export const createOrder = async ({
 }: any) => {
   try {
     const generatedId = uuidv4();
+
+    const isFoundAvailable = await foundsAvailable(balance.id, delivered, type);
+
+    if (!isFoundAvailable) {
+      throw new Error("Insufficient funds");
+    }
 
     const newOrderResult = await OrdersDB.saveOrder({
       id: generatedId,

@@ -1,5 +1,6 @@
 import BalanceDB from "@/db/balance";
 import { Balance } from "@/interfaces/balance";
+import { OrderType } from "@/interfaces/order";
 import { adapterDataToFront } from "@/adapters/balance";
 import { v4 as uuidv4 } from "uuid";
 
@@ -61,4 +62,17 @@ export const saveNewBalance = async (
     console.error(error);
     throw error;
   }
+};
+
+export const foundsAvailable = async (
+  balanceId: string,
+  deliveredAmount: number,
+  orderType: OrderType
+) => {
+  const balance = await getBalanceById(balanceId);
+
+  if (balance && orderType === "BUY") {
+    return deliveredAmount <= balance?.pesosAmount;
+  }
+  return balance && deliveredAmount <= balance?.usdAmount;
 };

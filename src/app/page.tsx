@@ -8,12 +8,12 @@ import OrderForm from "@/components/OrderForm";
 import { Customer } from "@/interfaces/customer";
 import { getBalanceOpenedByDate } from "@/server/balance";
 import { getCurrentDate } from "@/utils/dates";
+import { Balance } from "@/interfaces/balance";
 
 async function getInitData(): Promise<{
   orders: Order[];
   customers: Customer[];
-  isBalanceOpened: boolean;
-  balanceId: string;
+  balance: Balance | null;
 }> {
   try {
     const currentDate = getCurrentDate("yyyy-mm-dd");
@@ -26,21 +26,19 @@ async function getInitData(): Promise<{
     return {
       orders: statusOrders === 200 ? orders : [],
       customers: statusCustomers === 200 ? customers : [],
-      isBalanceOpened: !!balanceDayResult,
-      balanceId: balanceDayResult?.id || "",
+      balance: balanceDayResult,
     };
   } catch (error) {
     return {
       orders: [],
       customers: [],
-      isBalanceOpened: false,
-      balanceId: "",
+      balance: null,
     };
   }
 }
 
 export default async function Home() {
-  const { orders, customers, isBalanceOpened, balanceId } = await getInitData();
+  const { orders, customers, balance } = await getInitData();
   const currentDate = getCurrentDate("dd-mm-yyyy");
 
   return (
@@ -89,8 +87,8 @@ export default async function Home() {
         <OrderForm
           customers={customers}
           originalPrice={39.8}
-          isBalanceOpened={isBalanceOpened}
-          balanceId={balanceId}
+          isBalanceOpened={!!balance}
+          balance={balance}
         />
         <OrdersTable orders={orders} />
       </section>

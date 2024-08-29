@@ -14,6 +14,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { Customer } from "@/interfaces/customer";
 import { OrderType } from "@/interfaces/order";
 import { customRevalidateTag } from "@/actions/revalidateTag";
+import { Balance } from "@/interfaces/balance";
 
 type InputsType = {
   customer: string;
@@ -32,14 +33,14 @@ interface Props {
   customers: Customer[];
   originalPrice: number;
   isBalanceOpened: boolean;
-  balanceId: string;
+  balance: Balance | null;
 }
 
 export default function OrderForm({
   customers,
   originalPrice,
   isBalanceOpened,
-  balanceId,
+  balance,
 }: Props) {
   const [customerIdValue, setCustomerIdValue] = useState<string>();
   const { register, watch, handleSubmit, setValue } = useForm<InputsType>({
@@ -65,7 +66,24 @@ export default function OrderForm({
     return value.toFixed(2);
   };
 
+  const isFoundsAvailable = () => {
+    const delivered = parseFloat(watch("delivered"));
+
+    if (balance && orderTypeSelected === "BUY") {
+      return delivered <= balance?.pesosAmount;
+    }
+    return balance && delivered <= balance?.usdAmount;
+  };
+
   const onSubmit: SubmitHandler<InputsType> = async (formData) => {
+    if (!isFoundsAvailable()) {
+      setOpenSnackBar({
+        open: true,
+        message: "Fondos insuficientes, verifique el saldo en caja.",
+        severity: "error",
+      });
+      return;
+    }
     setOpenBackdrop(true);
 
     const { message, status } = await fetch("api/orders", {
@@ -79,7 +97,7 @@ export default function OrderForm({
         received: formData.received,
         delivered: formData.delivered,
         price: formData.price,
-        balanceId,
+        balanceId: balance?.id,
       }),
     }).then((res) => res.json());
 
