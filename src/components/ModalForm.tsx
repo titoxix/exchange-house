@@ -30,7 +30,8 @@ interface Props {
 export default function ModalForm(props: Props) {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-  const handleOnPress = () => {
+  const handleSubmit = () => {
+    props.onSubmit();
     onOpenChange();
   };
 
@@ -65,7 +66,7 @@ export default function ModalForm(props: Props) {
                 {props.modalTitle}
               </ModalHeader>
 
-              <form action={props?.action} onSubmit={props.onSubmit}>
+              <form action={props?.action} onSubmit={handleSubmit}>
                 <ModalBody>
                   {props.children}
                   <div>
@@ -86,7 +87,6 @@ export default function ModalForm(props: Props) {
                     type="submit"
                     aria-disabled={props.formStatus}
                     color="primary"
-                    onPress={handleOnPress}
                   >
                     {props.sendDataButtonTitle}
                   </Button>
