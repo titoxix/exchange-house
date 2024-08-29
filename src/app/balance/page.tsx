@@ -1,37 +1,63 @@
-import { getBalanceOpenedByDate } from "@/server/balance";
+import {
+  getBalanceOpenedByDate,
+  getBalancePendingClose,
+} from "@/server/balance";
 import BalanceForm from "@/components/BalanceForm";
 import CloseBalance from "@/components/CloseBalance";
 import { getCurrentDate } from "@/utils/dates";
 import { Balance } from "@/interfaces/balance";
+import Alert from "@/components/Alert";
 
-async function getData(): Promise<Balance | null> {
+interface BalancePageProps {
+  balance: Balance | null;
+  balancePendingClose: boolean;
+}
+
+async function getData(): Promise<BalancePageProps> {
   try {
     const currentDate = getCurrentDate("yyyy-mm-dd");
+    const balancePendingClose = await getBalancePendingClose(currentDate);
     const balanceDayResult = await getBalanceOpenedByDate(currentDate);
 
+    if (balancePendingClose) {
+      return {
+        balance: balancePendingClose,
+        balancePendingClose: true,
+      };
+    }
+
     if (!balanceDayResult) {
-      return null;
+      return {
+        balance: null,
+        balancePendingClose: false,
+      };
     }
     return {
-      id: balanceDayResult.id,
-      pesosAmount: balanceDayResult.pesosAmount,
-      usdAmount: balanceDayResult.usdAmount,
-      pesosInitialAmount: balanceDayResult.pesosInitialAmount || 0,
-      usdInitialAmount: balanceDayResult.usdInitialAmount || 0,
-      state: balanceDayResult.state,
+      balance: balanceDayResult,
+      balancePendingClose: false,
     };
   } catch (error) {
     console.error(error);
-    return null;
+    return {
+      balance: null,
+      balancePendingClose: false,
+    };
   }
 }
 
 export default async function BalancePage() {
-  const balance = await getData();
+  const { balance, balancePendingClose } = await getData();
   const currentDate = getCurrentDate("dd-mm-yyyy");
 
   return (
     <div className="">
+      {balancePendingClose && (
+        <Alert
+          message={`La caja del dia ${balance?.createdAt} esta pendiente de cierre.`}
+          messageSecondLine="Por favor cierre la caja antes de abrir una nueva."
+          severity="error"
+        />
+      )}
       <section className="flex flex-col gap-4">
         <span className="text-lg font-bold">{`Fecha: ${currentDate}`}</span>
         <span className="text-lg font-bold">Monto inicial</span>
@@ -49,7 +75,7 @@ export default async function BalancePage() {
           <p>USD</p> <p>{balance?.usdAmount || 0}</p>
           <BalanceForm
             operation="dollars"
-            balanceOpened={!!!balance}
+            balanceOpened={!!!balance || balancePendingClose}
             balance={balance}
           />
         </div>
@@ -58,11 +84,14 @@ export default async function BalancePage() {
           <p>UYU</p> <p>{balance?.pesosAmount || 0}</p>
           <BalanceForm
             operation="pesos"
-            balanceOpened={!!!balance}
+            balanceOpened={!!!balance || balancePendingClose}
             balance={balance}
           />
         </div>
-        <BalanceForm operation="both" balanceOpened={!!balance} />
+        <BalanceForm
+          operation="both"
+          balanceOpened={!!balance || balancePendingClose}
+        />
         <CloseBalance balance={balance} />
       </section>
     </div>

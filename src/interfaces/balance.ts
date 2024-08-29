@@ -5,4 +5,5 @@ export interface Balance {
   usdAmount: number;
   pesosAmount: number;
   state: "OPEN" | "CLOSED";
+  createdAt: string;
 }

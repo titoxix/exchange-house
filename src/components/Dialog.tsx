@@ -24,10 +24,11 @@ interface Props {
     | "secondary";
   children?: React.ReactNode;
   acceptAction?: () => void;
+  actionButtonTitle?: string;
 }
 
 export default function Dialog(props: Props) {
-  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   const handleOnPress = () => {
     const { acceptAction } = props;
@@ -59,7 +60,7 @@ export default function Dialog(props: Props) {
                   Cancelar
                 </Button>
                 <Button color="primary" onPress={handleOnPress}>
-                  Aceptar
+                  {props.actionButtonTitle || "Aceptar"}
                 </Button>
               </ModalFooter>
             </>

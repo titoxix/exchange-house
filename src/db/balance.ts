@@ -26,6 +26,23 @@ const getBalanceById = async (id: string) => {
   }
 };
 
+const getBalancePendingClose = async (date: string) => {
+  try {
+    const balanceInformation = await prisma.balance.findFirst({
+      where: {
+        createdAt: {
+          lte: new Date(date), // date in format yyyy-mm-dd
+        },
+        state: "OPEN",
+      },
+    });
+
+    return balanceInformation;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const getBalanceOpenedByDate = async (date: string) => {
   try {
     const balanceInformation = await prisma.balance.findFirst({
@@ -85,6 +102,7 @@ const balance = {
   getBalanceById,
   getAllsBalances,
   getBalanceOpenedByDate,
+  getBalancePendingClose,
   saveNewBalance,
   update,
 };

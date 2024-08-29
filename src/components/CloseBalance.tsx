@@ -63,14 +63,21 @@ export default function CloseBalance(props: Props) {
     <Dialog
       mainTitle="Cerrar caja"
       openButtonTitle="Cerrar caja"
-      openButtonColor="danger"
+      openButtonColor="default"
       acceptAction={closeBalance}
       openButtonIsDisabled={!props.balance}
+      actionButtonTitle={"Cerrar caja"}
     >
-      <p>
-        Al cerrar la caja se finalizará el día y no se podrán realizar
-        modificaciones.
-      </p>
+      <div>
+        <p>
+          Al cerrar la caja se finalizará el día y no se podrán realizar
+          modificaciones.
+        </p>
+        <p>
+          <b className="text-amber-500">Importante:</b> Antes de cerrar la caja,
+          asegúrese de que los montos sean correctos.
+        </p>
+      </div>
     </Dialog>
   );
 }

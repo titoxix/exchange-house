@@ -21,3 +21,12 @@ export const getCurrentDate = (format: DateFormat): string => {
 
   return `${year}-${monthString}-${day}`;
 };
+
+/**
+ * Format a date to the format dd-mm-yyyy
+ * @param {Date} date - The date to format
+ * @returns {string} - The date formatted as dd-mm-yyyy
+ */
+export const formatDateLatam = (date: Date): string => {
+  return date.toISOString().split("T")[0].split("-").reverse().join("-");
+};

@@ -1,5 +1,6 @@
 import BalanceDB from "@/db/balance";
 import { Balance } from "@/interfaces/balance";
+import { adapterDataToFront } from "@/adapters/balance";
 import { v4 as uuidv4 } from "uuid";
 
 export const getBalanceById = async (id: string) => {
@@ -13,9 +14,18 @@ export const getBalanceById = async (id: string) => {
 
 export const getBalanceOpenedByDate = async (date: string) => {
   try {
-    return await BalanceDB.getBalanceOpenedByDate(date);
+    const result = await BalanceDB.getBalanceOpenedByDate(date);
+    return result ? adapterDataToFront(result) : null;
   } catch (error) {
-    console.error(error);
+    throw error;
+  }
+};
+
+export const getBalancePendingClose = async (date: string) => {
+  try {
+    const result = await BalanceDB.getBalancePendingClose(date);
+    return result ? adapterDataToFront(result) : null;
+  } catch (error) {
     throw error;
   }
 };
