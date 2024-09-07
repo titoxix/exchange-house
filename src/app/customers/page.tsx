@@ -4,8 +4,14 @@ import CustomerTable from "@/components/CustomerTable";
 import CustomerForm from "@/components/CustomerForm";
 import { Customer } from "@/interfaces/customer";
 import { getCustomers } from "@/server/customers";
+import { auth } from "../../../auth";
+import { redirect } from "next/navigation";
 
 async function getData(): Promise<{ customers: Customer[] }> {
+  const session = await auth();
+  if (!session) {
+    redirect("/signin");
+  }
   const { status, data: customers } = await getCustomers();
 
   if (status !== 200) return { customers: [] };
