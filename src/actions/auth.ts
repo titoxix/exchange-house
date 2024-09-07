@@ -2,10 +2,11 @@
 
 import { z } from "zod";
 import bcrypt from "bcrypt";
-import { createSession, deleteSession } from "@/libs/session";
+//import { createSession, deleteSession } from "@/libs/session";
 import { createUser } from "@/server/users";
 import { Rol } from "@/interfaces/profile";
 import { redirect } from "next/navigation";
+import { signIn, signOut } from "../../auth";
 
 const RolTypes: z.ZodType<Rol> = z.enum(["ADMIN", "USER"]);
 
@@ -36,7 +37,8 @@ type FormState =
       };
       message?: string;
     }
-  | undefined;
+  | undefined
+  | null;
 
 export async function signup(state: FormState, formData: FormData) {
   try {
@@ -58,9 +60,7 @@ export async function signup(state: FormState, formData: FormData) {
     // 2. Prepare data for insertion into database
     const { name, email, password, rol } = validatedFields.data;
     // e.g. Hash the user's password before storing it
-    console.log("password", password);
     const hashedPassword = await bcrypt.hash(password, 10);
-    //const hashedPassword = "123"; //TEMPS
 
     console.log("hashedPassword", hashedPassword);
 
@@ -73,14 +73,12 @@ export async function signup(state: FormState, formData: FormData) {
       rol,
       hashedPassword
     );
-    console.log("newUser,", newUser);
     if (!newUser) {
       return {
         message: "An error occurred while creating your account.",
       };
     }
-    await createSession(newUser.id);
-    //redirect('/profile')
+    //await createSession(newUser.id);
   } catch (error) {
     console.error(error);
     return {
@@ -89,7 +87,23 @@ export async function signup(state: FormState, formData: FormData) {
   }
 }
 
-export async function logout() {
-  deleteSession();
+export async function signin(state: FormState, formData: FormData) {
+  try {
+    await signIn("credentials", {
+      email: formData.get("email"),
+      password: formData.get("password"),
+      redirect: false,
+    });
+  } catch (error) {
+    return {
+      message: "Invalid email or password.",
+    };
+  }
+  redirect("/");
+}
+
+export async function signout() {
+  //deleteSession();
+  await signOut();
   redirect("/login");
 }

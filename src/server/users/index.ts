@@ -38,3 +38,13 @@ export const createUser = async (
     throw error;
   }
 };
+
+export const getUser = async (email: string) => {
+  try {
+    const user = await usersDB.getUserByEmail(email);
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};

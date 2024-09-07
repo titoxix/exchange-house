@@ -17,6 +17,7 @@ import {
   DropdownItem,
 } from "@nextui-org/react";
 //import Avatar from "@mui/material/Avatar";
+import SignoutButton from "./SignoutButton";
 
 export const AcmeLogo = () => (
   <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
@@ -68,7 +69,7 @@ export default function Navbar() {
         </NavbarItem>
       </NavbarContent>
 
-      {/* <NavbarContent as="div" justify="end">
+      <NavbarContent as="div" justify="end">
         <Dropdown placement="bottom-end">
           <DropdownTrigger>
             <Avatar
@@ -86,11 +87,11 @@ export default function Navbar() {
               <p className="text-default-400">santi@gmail.com</p>
             </DropdownItem>
             <DropdownItem key="logout" color="danger">
-              Salir
+              <SignoutButton />
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
-      </NavbarContent> */}
+      </NavbarContent>
 
       <NavbarMenu>
         {menuItems.map((item, index) => (

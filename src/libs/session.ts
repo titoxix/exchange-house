@@ -19,7 +19,7 @@ const cookie = {
   duration: 24 * 60 * 60 * 1000,
 };
 
-const secretKey = process.env.SESSION_SECRET;
+/* const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
 
 export async function encrypt(payload: SessionPayload) {
@@ -81,4 +81,4 @@ export async function verifySession() {
 
 export async function deleteSession() {
   cookies().delete(cookie.name);
-}
+} */

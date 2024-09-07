@@ -7,6 +7,8 @@ import CloseBalance from "@/components/CloseBalance";
 import { getCurrentDate } from "@/utils/dates";
 import { Balance } from "@/interfaces/balance";
 import Alert from "@/components/Alert";
+import { auth } from "../../../auth";
+import { redirect } from "next/navigation";
 
 interface BalancePageProps {
   balance: Balance | null;
@@ -14,6 +16,10 @@ interface BalancePageProps {
 }
 
 async function getData(): Promise<BalancePageProps> {
+  const session = await auth();
+  if (!session) {
+    redirect("/signin");
+  }
   try {
     const currentDate = getCurrentDate("yyyy-mm-dd");
     const balancePendingClose = await getBalancePendingClose(currentDate);

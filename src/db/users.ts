@@ -30,8 +30,28 @@ const createUser = async (
   }
 };
 
+const getUserByEmail = async (email: string) => {
+  try {
+    const user = await prisma.users.findFirst({
+      where: {
+        email: email,
+      },
+      include: { profile: true },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return user;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const users = {
   createUser,
+  getUserByEmail,
 };
 
 export default users;
