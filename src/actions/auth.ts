@@ -96,10 +96,10 @@ export async function signin(state: FormState, formData: FormData) {
     });
   } catch (error) {
     return {
-      message: "Invalid email or password.",
+      message: "Correo o contraseña incorrectos.",
     };
   }
-  redirect("/");
+  redirect("/dashboard");
 }
 
 export async function signout() {

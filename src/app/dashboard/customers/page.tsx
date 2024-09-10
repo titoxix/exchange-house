@@ -4,7 +4,7 @@ import CustomerTable from "@/components/CustomerTable";
 import CustomerForm from "@/components/CustomerForm";
 import { Customer } from "@/interfaces/customer";
 import { getCustomers } from "@/server/customers";
-import { auth } from "../../../auth";
+import { auth } from "../../../../auth";
 import { redirect } from "next/navigation";
 
 async function getData(): Promise<{ customers: Customer[] }> {

@@ -9,7 +9,7 @@ import { Customer } from "@/interfaces/customer";
 import { getBalanceOpenedByDate } from "@/server/balance";
 import { getCurrentDate } from "@/utils/dates";
 import { Balance } from "@/interfaces/balance";
-import { auth } from "../../auth";
+import { auth } from "../../../auth";
 import { redirect } from "next/navigation";
 
 async function getInitData(): Promise<{

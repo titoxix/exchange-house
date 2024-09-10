@@ -48,22 +48,22 @@ export default function Navbar() {
 
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarItem>
-          <Link color="foreground" href="/">
+          <Link color="foreground" href="/dashboard">
             Inicio
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link color="foreground" href="/customers">
+          <Link color="foreground" href="/dashboard/customers">
             Clientes
           </Link>
         </NavbarItem>
         <NavbarItem isActive>
-          <Link href="/transactions" aria-current="page">
+          <Link href="/dashboard/transactions" aria-current="page">
             Operaciones
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link color="foreground" href="/balance">
+          <Link color="foreground" href="/dashboard/balance">
             Caja
           </Link>
         </NavbarItem>

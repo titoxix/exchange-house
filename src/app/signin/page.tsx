@@ -1,62 +1,48 @@
 "use client";
+
 import { useFormState } from "react-dom";
 import { signin } from "@/actions/auth";
+import { Button, Input } from "@nextui-org/react";
+import { MailIcon } from "@/components/icons/MailIcon";
+import { LockIcon } from "@/components/icons/LockIcon";
 
 export default function SigninForm() {
   const [state, action, pending] = useFormState(signin, undefined);
 
   return (
-    <form action={action}>
-      <label>
-        Email
-        <input name="email" type="email" defaultValue="mat.360z@gmail.com" />
-      </label>
-      <label>
-        Password
-        <input name="password" type="password" defaultValue="%Perro1234" />
-      </label>
-      <div>
-        <button>Sign In</button>
+    <div className="flex h-screen">
+      <div className="w-full max-w-md m-auto">
+        <form action={action}>
+          <div className="mb-4">
+            <Input
+              autoFocus
+              name="email"
+              endContent={
+                <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+              }
+              label="Correo Electrónico"
+              variant="bordered"
+              isRequired
+            />
+          </div>
+          <div className="mb-6">
+            <Input
+              name="password"
+              endContent={
+                <LockIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+              }
+              label="Contraseña"
+              type="password"
+              variant="bordered"
+              isRequired
+            />
+          </div>
+          <Button type="submit" className="w-full" color="primary">
+            Entrar
+          </Button>
+          <label>{state?.message}</label>
+        </form>
       </div>
-      <label>{state?.message}</label>
-    </form>
+    </div>
   );
 }
-
-/* import { redirect } from "next/navigation";
-import { signIn } from "../../../auth";
-
-export default function SigninForm() {
-  return (
-    <form
-      action={async (formData) => {
-        "use server";
-        try {
-          const result = await signIn("credentials", {
-            email: formData.get("email"),
-            password: formData.get("password"),
-            redirectTo: "/",
-            //redirect: true,
-          });
-          console.log("result", result);
-        } catch (error) {
-          return null;
-        }
-        redirect("/");
-      }}
-    >
-      <label>
-        Email
-        <input name="email" type="email" defaultValue="dulce@gmail.com" />
-      </label>
-      <label>
-        Password
-        <input name="password" type="password" defaultValue="%Perro1234" />
-      </label>
-      <div>
-        <button>Sign In</button>
-      </div>
-    </form>
-  );
-}
- */

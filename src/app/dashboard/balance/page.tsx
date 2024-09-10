@@ -7,7 +7,7 @@ import CloseBalance from "@/components/CloseBalance";
 import { getCurrentDate } from "@/utils/dates";
 import { Balance } from "@/interfaces/balance";
 import Alert from "@/components/Alert";
-import { auth } from "../../../auth";
+import { auth } from "../../../../auth";
 import { redirect } from "next/navigation";
 
 interface BalancePageProps {
