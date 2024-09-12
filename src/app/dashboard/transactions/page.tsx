@@ -1,15 +1,7 @@
-import { auth } from "../../../../auth";
-import { redirect } from "next/navigation";
-
-async function getInitialData() {
-  const session = await auth();
-  if (!session) {
-    redirect("/signin");
-  }
-}
+async function getInitialData() {}
 
 export default async function Transactions() {
-  await getInitialData();
+  //await getInitialData();
   return (
     <div className="">
       <section className="flex flex-col gap-4">

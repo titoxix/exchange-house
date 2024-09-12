@@ -2,10 +2,8 @@
 
 import { useFormState } from "react-dom";
 import { signup } from "@/actions/auth";
-import { auth } from "../../../../auth";
 
 export default function SignupForm() {
-  //const { pending, data, action } = useFormStatus();
   const [state, action, pending] = useFormState(signup, undefined);
 
   return (

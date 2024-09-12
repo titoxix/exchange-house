@@ -16,8 +16,8 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@nextui-org/react";
-//import Avatar from "@mui/material/Avatar";
 import SignoutButton from "./SignoutButton";
+import { useSession } from "next-auth/react";
 
 export const AcmeLogo = () => (
   <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
@@ -29,10 +29,12 @@ export const AcmeLogo = () => (
     />
   </svg>
 );
-const menuItems = ["Clientes", "Operaciones", "Caja", "Salir"];
+const menuItems = ["Clientes", "Usuarios", "Operaciones", "Caja", "Salir"];
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { data: session } = useSession();
+
   return (
     <NextUINavbar onMenuOpenChange={setIsMenuOpen} isBordered maxWidth="full">
       <NavbarContent>
@@ -57,6 +59,11 @@ export default function Navbar() {
             Clientes
           </Link>
         </NavbarItem>
+        <NavbarItem>
+          <Link color="foreground" href="/dashboard/signup">
+            Usuarios
+          </Link>
+        </NavbarItem>
         <NavbarItem isActive>
           <Link href="/dashboard/transactions" aria-current="page">
             Operaciones
@@ -77,14 +84,14 @@ export default function Navbar() {
               as="button"
               className="transition-transform"
               color="primary"
-              name="Santiago Saralegui"
+              name={session?.user?.name as string}
               size="sm"
             />
           </DropdownTrigger>
           <DropdownMenu aria-label="Profile Actions" variant="flat">
             <DropdownItem key="profile" className="h-14 gap-2">
-              <p className="font-semibold">Santigo Saralegui</p>
-              <p className="text-default-400">santi@gmail.com</p>
+              <p className="font-semibold">{session?.user?.name}</p>
+              <p className="text-default-400">{session?.user?.email}</p>
             </DropdownItem>
             <DropdownItem key="logout" color="danger">
               <SignoutButton />
