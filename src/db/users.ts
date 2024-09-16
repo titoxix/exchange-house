@@ -1,6 +1,18 @@
 import prisma from "@/libs/prisma";
 import { Users, Profile } from "@prisma/client";
 
+const getUsers = async () => {
+  try {
+    const users = await prisma.users.findMany({
+      include: { profile: true },
+    });
+
+    return users;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const createUser = async (
   user: Omit<Users, "idAuto" | "createdAt" | "updatedAt">,
   profile: Omit<Profile, "idAuto" | "createdAt" | "updatedAt" | "userId">
@@ -50,6 +62,7 @@ const getUserByEmail = async (email: string) => {
 };
 
 const users = {
+  getUsers,
   createUser,
   getUserByEmail,
 };

@@ -60,7 +60,7 @@ export default function Navbar() {
           </Link>
         </NavbarItem>
         <NavbarItem>
-          <Link color="foreground" href="/dashboard/signup">
+          <Link color="foreground" href="/dashboard/users">
             Usuarios
           </Link>
         </NavbarItem>

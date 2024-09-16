@@ -1,10 +1,17 @@
 import { AppProvider } from "@/context";
+import { auth } from "../../../auth";
+import { redirect } from "next/navigation";
 
-export default function SigninLayout({
+export default async function SigninLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const session = await auth();
+
+  if (session) {
+    redirect("/dashboard");
+  }
   return (
     <AppProvider>
       <div className="flex min-h-screen flex-col items-center">

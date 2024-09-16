@@ -56,7 +56,7 @@ export async function registerCustomer(
       };
     }
 
-    revalidatePath("/customers");
+    revalidatePath("/dashboard/customers");
     return {
       input: "",
       inputMessage: "",

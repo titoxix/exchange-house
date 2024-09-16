@@ -7,26 +7,40 @@ import { createUser } from "@/server/users";
 import { Rol } from "@/interfaces/profile";
 import { redirect } from "next/navigation";
 import { signIn, signOut } from "../../auth";
+import { revalidatePath } from "next/cache";
 
 const RolTypes: z.ZodType<Rol> = z.enum(["ADMIN", "USER"]);
 
-const SignupFormSchema = z.object({
-  name: z
-    .string()
-    .min(2, { message: "Name must be at least 2 characters long." })
-    .trim(),
-  email: z.string().email({ message: "Please enter a valid email." }).trim(),
-  password: z
-    .string()
-    .min(8, { message: "Be at least 8 characters long" })
-    .regex(/[a-zA-Z]/, { message: "Contain at least one letter." })
-    .regex(/[0-9]/, { message: "Contain at least one number." })
-    .regex(/[^a-zA-Z0-9]/, {
-      message: "Contain at least one special character.",
-    })
-    .trim(),
-  rol: RolTypes,
-});
+const SignupFormSchema = z
+  .object({
+    name: z
+      .string()
+      .min(2, { message: "El nombre debe tener al menos 2 caracteres." })
+      .trim(),
+    lastName: z
+      .string()
+      .min(2, { message: "El apellido debe tener al menos 2 caracteres." })
+      .trim(),
+    email: z
+      .string()
+      .email({ message: "Por favor ingrese un correo electrónico válido." })
+      .trim(),
+    password: z
+      .string()
+      .min(8, { message: "Deberia tener almenos 8 caracteres" })
+      .regex(/[a-zA-Z]/, { message: " al menos una letra mayúscula" })
+      .regex(/[0-9]/, { message: " al menos un número" })
+      .regex(/[^a-zA-Z0-9]/, {
+        message: " y contener al menos un carácter especial.",
+      })
+      .trim(),
+    confirmPassword: z.string(),
+    rol: RolTypes,
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Las contraseñas no coinciden.",
+    path: ["confirmPassword"],
+  });
 
 type FormState =
   | {
@@ -36,6 +50,8 @@ type FormState =
         password?: string[];
       };
       message?: string;
+      isError?: boolean;
+      isRegister?: boolean;
     }
   | undefined
   | null;
@@ -45,8 +61,10 @@ export async function signup(state: FormState, formData: FormData) {
     // Validate form fields
     const validatedFields = SignupFormSchema.safeParse({
       name: formData.get("name"),
+      lastName: formData.get("lastName"),
       email: formData.get("email"),
       password: formData.get("password"),
+      confirmPassword: formData.get("confirmPassword"),
       rol: formData.get("rol"),
     });
 
@@ -58,31 +76,38 @@ export async function signup(state: FormState, formData: FormData) {
     }
 
     // 2. Prepare data for insertion into database
-    const { name, email, password, rol } = validatedFields.data;
+    const { name, lastName, email, password, rol } = validatedFields.data;
     // e.g. Hash the user's password before storing it
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    console.log("hashedPassword", hashedPassword);
 
     const newUser = await createUser(
       {
         name,
         email,
-        lastName: "",
+        lastName,
       },
       rol,
       hashedPassword
     );
     if (!newUser) {
       return {
-        message: "An error occurred while creating your account.",
+        message: "Se produjo un error al registrar el usuario.",
+        isError: true,
+        isRegister: false,
       };
     }
-    //await createSession(newUser.id);
+    revalidatePath("/dashboard/users");
+    return {
+      message: "Usuario registrado.",
+      isError: false,
+      isRegister: true,
+    };
   } catch (error) {
     console.error(error);
     return {
-      message: "Unexpected error occurred.",
+      message: "Se produjo un error inesperado.",
+      isError: true,
+      isRegister: false,
     };
   }
 }

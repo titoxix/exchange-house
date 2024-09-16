@@ -5,7 +5,6 @@ import Backdrop from "@/components/Backdrop";
 import Snackbar from "@/components/Snackbar";
 import { AppProvider } from "@/context";
 import { SessionProvider } from "next-auth/react";
-
 import { auth } from "../../../auth";
 import { redirect } from "next/navigation";
 
