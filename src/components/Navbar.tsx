@@ -18,6 +18,7 @@ import {
 } from "@nextui-org/react";
 import SignoutButton from "./SignoutButton";
 import { useSession } from "next-auth/react";
+import { usePathname } from "next/navigation";
 
 export const AcmeLogo = () => (
   <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
@@ -34,6 +35,7 @@ const menuItems = ["Clientes", "Usuarios", "Operaciones", "Caja", "Salir"];
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { data: session } = useSession();
+  const pathname = usePathname();
 
   return (
     <NextUINavbar onMenuOpenChange={setIsMenuOpen} isBordered maxWidth="full">
@@ -49,28 +51,49 @@ export default function Navbar() {
       </NavbarContent>
 
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarItem>
-          <Link color="foreground" href="/dashboard">
+        <NavbarItem isActive={pathname === "/dashboard"}>
+          <Link
+            color={pathname == "/dashboard" ? "primary" : "foreground"}
+            href="/dashboard"
+            aria-current="page"
+          >
             Inicio
           </Link>
         </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="/dashboard/customers">
+        <NavbarItem isActive={pathname === "/dashboard/customers"}>
+          <Link
+            color={
+              pathname === "/dashboard/customers" ? "primary" : "foreground"
+            }
+            href="/dashboard/customers"
+          >
             Clientes
           </Link>
         </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="/dashboard/users">
+        <NavbarItem isActive={pathname === "/dashboard/users"}>
+          <Link
+            color={pathname === "/dashboard/users" ? "primary" : "foreground"}
+            href="/dashboard/users"
+          >
             Usuarios
           </Link>
         </NavbarItem>
-        <NavbarItem isActive>
-          <Link href="/dashboard/transactions" aria-current="page">
+        <NavbarItem isActive={pathname === "/dashboard/transactions"}>
+          <Link
+            color={
+              pathname === "/dashboard/transactions" ? "primary" : "foreground"
+            }
+            href="/dashboard/transactions"
+            aria-current="page"
+          >
             Operaciones
           </Link>
         </NavbarItem>
-        <NavbarItem>
-          <Link color="foreground" href="/dashboard/balance">
+        <NavbarItem isActive={pathname === "/dashboard/balance"}>
+          <Link
+            color={pathname === "/dashboard/balance" ? "primary" : "foreground"}
+            href="/dashboard/balance"
+          >
             Caja
           </Link>
         </NavbarItem>
