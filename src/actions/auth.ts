@@ -25,6 +25,12 @@ const SignupFormSchema = z
       .string()
       .email({ message: "Por favor ingrese un correo electrónico válido." })
       .trim(),
+    loginName: z
+      .string()
+      .min(4, {
+        message: "El nombre de usuario debe tener al menos 4 caracteres",
+      })
+      .trim(),
     password: z
       .string()
       .min(8, { message: "Deberia tener almenos 8 caracteres" })
@@ -63,6 +69,7 @@ export async function signup(state: FormState, formData: FormData) {
       name: formData.get("name"),
       lastName: formData.get("lastName"),
       email: formData.get("email"),
+      loginName: formData.get("loginName"),
       password: formData.get("password"),
       confirmPassword: formData.get("confirmPassword"),
       rol: formData.get("rol"),
@@ -76,7 +83,8 @@ export async function signup(state: FormState, formData: FormData) {
     }
 
     // 2. Prepare data for insertion into database
-    const { name, lastName, email, password, rol } = validatedFields.data;
+    const { name, lastName, email, loginName, password, rol } =
+      validatedFields.data;
     // e.g. Hash the user's password before storing it
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -86,6 +94,7 @@ export async function signup(state: FormState, formData: FormData) {
         email,
         lastName,
       },
+      loginName,
       rol,
       hashedPassword
     );

@@ -26,6 +26,7 @@ export const getUsers = async (): Promise<getUsersResponse> => {
         name: user.name,
         lastName: user.lastName,
         email: user.email,
+        loginName: user.profile?.loginName as string,
         rol: user.profile?.role as Rol,
       };
     });
@@ -48,7 +49,8 @@ export const getUser = async (email: string) => {
 };
 
 export const createUser = async (
-  user: Omit<User, "id" | "rol">,
+  user: Omit<User, "id" | "rol" | "loginName">,
+  loginName: string,
   role: Rol,
   password: string
 ) => {
@@ -59,6 +61,7 @@ export const createUser = async (
       id: profileId,
       password,
       role,
+      loginName,
       enabled: true,
     };
 

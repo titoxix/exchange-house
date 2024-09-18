@@ -89,9 +89,10 @@ model Profile {
   id        String   @unique
   role      Role     @default(USER)
   user      Users    @relation(fields: [userId], references: [idAuto])
+  userId    Int      @unique
+  loginName String   @unique
   enabled   Boolean  @default(true)
   password  String
-  userId    Int      @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -107,6 +108,7 @@ enum BalanceState {
 }
 
 enum Role {
+  SUPER_ADMIN
   ADMIN
   USER
 }

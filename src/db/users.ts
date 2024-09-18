@@ -27,6 +27,7 @@ const createUser = async (
         profile: {
           create: {
             id: profile.id,
+            loginName: profile.loginName,
             password: profile.password,
             role: profile.role,
             enabled: profile.enabled,

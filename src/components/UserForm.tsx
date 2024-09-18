@@ -68,6 +68,16 @@ export default function UserForm() {
             isRequired
           />
           <Input
+            name="loginName"
+            label="Nombre de usuario"
+            placeholder="Nombre de usuario para iniciar sesión"
+            variant="bordered"
+            isInvalid={state?.errors?.loginName && !!state?.errors?.loginName}
+            errorMessage={state?.errors?.loginName && state?.errors?.loginName}
+            isRequired
+            description="Ejemplo: nombre.apellido"
+          />
+          <Input
             name="password"
             label="Contraseña"
             type="password"
