@@ -12,7 +12,7 @@ const columns = [
   { name: "APELLIDO", uid: "lastName" },
   { name: "EMAIL", uid: "email" },
   { name: "NOMBRE DE USUARIO", uid: "loginName" },
-  { name: "ROL", uid: "rol" },
+  { name: "ROL", uid: "role" },
   { name: "ACTIONS", uid: "actions" },
 ];
 

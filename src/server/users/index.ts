@@ -1,7 +1,8 @@
 import usersDB from "@/db/users";
 import { v4 as uuidv4 } from "uuid";
-import { Rol } from "@/interfaces/profile";
+import { Role } from "@/interfaces/profile";
 import { User } from "@/interfaces/user";
+import { getProfileByLoginName } from "@/server/profile";
 
 interface Response {
   error?: string;
@@ -27,7 +28,7 @@ export const getUsers = async (): Promise<getUsersResponse> => {
         lastName: user.lastName,
         email: user.email,
         loginName: user.profile?.loginName as string,
-        rol: user.profile?.role as Rol,
+        role: user.profile?.role as Role,
       };
     });
 
@@ -38,20 +39,27 @@ export const getUsers = async (): Promise<getUsersResponse> => {
   }
 };
 
-export const getUser = async (email: string) => {
+export const getUserForLogin = async (loginName: string) => {
   try {
-    const user = await usersDB.getUserByEmail(email);
+    const profile = await getProfileByLoginName(loginName, true);
 
-    return user;
+    return {
+      id: profile?.user.id,
+      name: profile?.user.name,
+      lastName: profile?.user.lastName,
+      loginName: profile?.loginName,
+      password: profile?.password,
+      role: profile?.role,
+    };
   } catch (error) {
     throw error;
   }
 };
 
 export const createUser = async (
-  user: Omit<User, "id" | "rol" | "loginName">,
+  user: Omit<User, "id" | "role" | "loginName">,
   loginName: string,
-  role: Rol,
+  role: Role,
   password: string
 ) => {
   try {

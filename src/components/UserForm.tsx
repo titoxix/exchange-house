@@ -105,7 +105,7 @@ export default function UserForm() {
             isRequired
           />
           <Select
-            name="rol"
+            name="role"
             label="Rol del usuario"
             variant="bordered"
             defaultSelectedKeys={["USER"]}

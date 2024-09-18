@@ -1,4 +1,4 @@
-import { Rol } from "./profile";
+import { Role } from "./profile";
 
 export interface User {
   id: string;
@@ -6,5 +6,5 @@ export interface User {
   lastName: string;
   email: string;
   loginName: string;
-  rol: Rol;
+  role: Role;
 }

@@ -1,43 +1,40 @@
 import NextAuth from "next-auth";
 import credentials from "next-auth/providers/credentials";
-import { getUser } from "@/server/users";
+import { getUserForLogin } from "@/server/users";
 import bcrypt from "bcrypt";
-import { Rol } from "@/interfaces/profile";
+import { Role } from "@/interfaces/profile";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     credentials({
       name: "Credentials",
       credentials: {
-        email: { label: "Emial", type: "email" },
+        loginName: { label: "Nombre de Usuario", type: "text" },
         password: { label: "Password", type: "password" },
       },
-      authorize: async ({ email, password }) => {
+      authorize: async ({ loginName, password }) => {
         try {
           let user = null;
           let match = false;
 
-          user = await getUser(email as string);
+          user = await getUserForLogin(loginName as string);
 
-          if (!user) {
+          if (!user || !user.id) {
             throw new Error("Invalid credentials.");
           }
 
-          if (user.profile) {
-            match = await bcrypt.compare(
-              password as string,
-              user.profile.password
-            );
+          if (user.password) {
+            match = await bcrypt.compare(password as string, user.password);
           }
 
           if (!match) {
             throw new Error("Invalid credentials.");
           }
           return {
-            //id: user.id,
+            id: user.id,
             name: `${user.name} ${user.lastName}`,
-            email: user.email,
-            role: user.profile?.role as Rol,
+            loginName: user.loginName as string,
+            role: user?.role as Role,
           };
         } catch (error: any) {
           console.error(error?.message);
@@ -50,14 +47,15 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;
+        token.loginName = user.loginName;
         token.role = user.role;
       }
       return token;
     },
     async session({ session, token }) {
       if (token?.id) {
-        //session.user.id = token.id as string;
-        session.user.role = token.role as Rol;
+        session.user.role = token.role as Role;
+        session.user.loginName = token.loginName as string;
       }
       return session;
     },

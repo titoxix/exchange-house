@@ -1,5 +1,5 @@
 import NextAuth, { type DefaultSession } from "next-auth";
-import { Rol } from "@/interfaces/profile";
+import { Role } from "@/interfaces/profile";
 
 declare module "next-auth" {
   /**
@@ -8,7 +8,8 @@ declare module "next-auth" {
   interface Session {
     user: {
       id: string;
-      role: Rol;
+      loginName: string;
+      role: Role;
       /**
        * By default, TypeScript merges new interface properties and overwrites existing ones.
        * In this case, the default session user properties will be overwritten,
@@ -19,6 +20,7 @@ declare module "next-auth" {
   }
   interface User {
     id: string;
-    role: Rol;
+    loginName: string;
+    role: Role;
   }
 }

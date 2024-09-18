@@ -3,7 +3,6 @@
 import { useFormState } from "react-dom";
 import { signin } from "@/actions/auth";
 import { Button, Input } from "@nextui-org/react";
-import { MailIcon } from "@/components/icons/MailIcon";
 import { LockIcon } from "@/components/icons/LockIcon";
 
 export default function SigninForm() {
@@ -16,11 +15,8 @@ export default function SigninForm() {
           <div className="mb-4">
             <Input
               autoFocus
-              name="email"
-              endContent={
-                <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
-              }
-              label="Correo Electrónico"
+              name="loginName"
+              label="Nombre de Usuario"
               variant="bordered"
               isRequired
             />

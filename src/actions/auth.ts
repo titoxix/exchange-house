@@ -4,12 +4,12 @@ import { z } from "zod";
 import bcrypt from "bcrypt";
 //import { createSession, deleteSession } from "@/libs/session";
 import { createUser } from "@/server/users";
-import { Rol } from "@/interfaces/profile";
+import { Role } from "@/interfaces/profile";
 import { redirect } from "next/navigation";
 import { signIn, signOut } from "../../auth";
 import { revalidatePath } from "next/cache";
 
-const RolTypes: z.ZodType<Rol> = z.enum(["ADMIN", "USER"]);
+const RoleTypes: z.ZodType<Role> = z.enum(["ADMIN", "USER"]);
 
 const SignupFormSchema = z
   .object({
@@ -41,7 +41,7 @@ const SignupFormSchema = z
       })
       .trim(),
     confirmPassword: z.string(),
-    rol: RolTypes,
+    role: RoleTypes,
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Las contraseñas no coinciden.",
@@ -72,7 +72,7 @@ export async function signup(state: FormState, formData: FormData) {
       loginName: formData.get("loginName"),
       password: formData.get("password"),
       confirmPassword: formData.get("confirmPassword"),
-      rol: formData.get("rol"),
+      role: formData.get("role"),
     });
 
     // If any form fields are invalid, return early
@@ -83,7 +83,7 @@ export async function signup(state: FormState, formData: FormData) {
     }
 
     // 2. Prepare data for insertion into database
-    const { name, lastName, email, loginName, password, rol } =
+    const { name, lastName, email, loginName, password, role } =
       validatedFields.data;
     // e.g. Hash the user's password before storing it
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -95,7 +95,7 @@ export async function signup(state: FormState, formData: FormData) {
         lastName,
       },
       loginName,
-      rol,
+      role,
       hashedPassword
     );
     if (!newUser) {
@@ -124,7 +124,7 @@ export async function signup(state: FormState, formData: FormData) {
 export async function signin(state: FormState, formData: FormData) {
   try {
     await signIn("credentials", {
-      email: formData.get("email"),
+      loginName: formData.get("loginName"),
       password: formData.get("password"),
       redirect: false,
     });
