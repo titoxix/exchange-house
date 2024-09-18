@@ -70,14 +70,16 @@ export default function Navbar() {
             Clientes
           </Link>
         </NavbarItem>
-        <NavbarItem isActive={pathname === "/dashboard/users"}>
-          <Link
-            color={pathname === "/dashboard/users" ? "primary" : "foreground"}
-            href="/dashboard/users"
-          >
-            Usuarios
-          </Link>
-        </NavbarItem>
+        {session?.user?.role === "ADMIN" && (
+          <NavbarItem isActive={pathname === "/dashboard/users"}>
+            <Link
+              color={pathname === "/dashboard/users" ? "primary" : "foreground"}
+              href="/dashboard/users"
+            >
+              Usuarios
+            </Link>
+          </NavbarItem>
+        )}
         <NavbarItem isActive={pathname === "/dashboard/transactions"}>
           <Link
             color={

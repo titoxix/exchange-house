@@ -4,19 +4,34 @@ import UserForm from "@/components/UserForm";
 import UsersTable from "@/components/UsersTable";
 import { getUsers } from "@/server/users";
 import { User } from "@/interfaces/user";
+import { auth } from "../../../../auth";
+import { redirect } from "next/navigation";
 
-async function getData(): Promise<{ users: User[] }> {
+interface Props {
+  users: User[];
+  isAuth: boolean;
+}
+async function getData(): Promise<Props> {
+  const session = await auth();
+
+  if (session?.user.role !== "ADMIN") {
+    return { users: [], isAuth: false };
+  }
   const { status, data: users } = await getUsers();
 
-  if (status !== 200) return { users: [] };
+  if (status !== 200) return { users: [], isAuth: true };
 
-  if (users) return { users };
+  if (users) return { users, isAuth: true };
 
-  return { users: [] };
+  return { users: [], isAuth: true };
 }
 
 export default async function Users() {
-  const { users } = await getData();
+  const { users, isAuth } = await getData();
+
+  if (!isAuth) {
+    redirect("/dashboard");
+  }
 
   return (
     <div className="">

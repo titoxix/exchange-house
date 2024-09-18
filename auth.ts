@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import credentials from "next-auth/providers/credentials";
 import { getUser } from "@/server/users";
 import bcrypt from "bcrypt";
+import { Rol } from "@/interfaces/profile";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -33,10 +34,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             throw new Error("Invalid credentials.");
           }
           return {
-            id: user.id,
-            name: user.name,
+            //id: user.id,
+            name: `${user.name} ${user.lastName}`,
             email: user.email,
-            role: user.profile?.role,
+            role: user.profile?.role as Rol,
           };
         } catch (error: any) {
           console.error(error?.message);
@@ -45,6 +46,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
     }),
   ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        token.id = user.id;
+        token.role = user.role;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (token?.id) {
+        //session.user.id = token.id as string;
+        session.user.role = token.role as Rol;
+      }
+      return session;
+    },
+  },
+  session: {
+    strategy: "jwt",
+  },
   pages: {
     signIn: "/signin",
   },
