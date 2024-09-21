@@ -86,7 +86,7 @@ export default function OrderForm({
     }
     setOpenBackdrop(true);
 
-    const { message, status } = await fetch("api/orders", {
+    const { message, status } = await fetch("../api/orders", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -209,8 +209,8 @@ export default function OrderForm({
             <div className="pointer-events-none flex items-center">
               <span className="text-default-400 text-small">
                 {orderTypeSelected === "BUY" || !orderTypeSelected
-                  ? "USD"
-                  : "UYU"}
+                  ? "US$"
+                  : "$"}
               </span>
             </div>
           }
@@ -250,8 +250,8 @@ export default function OrderForm({
             <div className="pointer-events-none flex items-center">
               <span className="text-default-400 text-small">
                 {orderTypeSelected === "BUY" || !orderTypeSelected
-                  ? "UYU"
-                  : "USD"}
+                  ? "$"
+                  : "US$"}
               </span>
             </div>
           }

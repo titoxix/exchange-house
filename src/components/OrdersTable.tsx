@@ -5,6 +5,7 @@ import { EditIcon } from "./icons/EditIcon";
 import { EyeIcon } from "./icons/EyeIcon";
 import { Chip, ChipProps, Tooltip } from "@nextui-org/react";
 import { Order } from "@/interfaces/order";
+import { formatCurrency } from "@/utils/currency";
 
 const columns = [
   { name: "FECHA", uid: "date" },
@@ -55,10 +56,12 @@ export default function OrdersTable({ orders }: Props) {
             {cellValue === "BUY" ? "COMPRA" : "VENTA"}
           </Chip>
         );
+      case "price":
+        return <p>{formatCurrency(Number(cellValue), "es-UY", "USD")}</p>;
       case "usdAmount":
-        return <p>{`USD ${Number(cellValue).toFixed(2)}`}</p>;
+        return <p>{formatCurrency(Number(cellValue), "es-UY", "USD")}</p>;
       case "pesosAmount":
-        return <p>{`$U ${cellValue}`}</p>;
+        return <p>{formatCurrency(Number(cellValue), "es-UY", "UYU")}</p>;
       default:
         return cellValue;
     }

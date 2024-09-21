@@ -8,6 +8,7 @@ import { customRevalidateTag } from "@/actions/revalidateTag";
 interface Props {
   balance: Balance | null;
 }
+const API_URL = "../api/balance";
 
 export default function CloseBalance(props: Props) {
   const { setOpenBackdrop, setOpenSnackBar } = useAppContext();
@@ -16,7 +17,7 @@ export default function CloseBalance(props: Props) {
     try {
       setOpenBackdrop(true);
 
-      const result = await fetch(`/api/balance`, {
+      const result = await fetch(API_URL, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

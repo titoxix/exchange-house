@@ -15,8 +15,8 @@ interface Props {
 }
 
 const modalButtonTitle = {
-  dollars: "(USD) Aporte dolares",
-  pesos: "(UYU) Aporte pesos",
+  dollars: "(US$) Aporte dolares",
+  pesos: "($) Aporte pesos",
   both: "Abrir caja",
 };
 
@@ -30,6 +30,8 @@ type InputsType = {
   dollars: number;
   pesos: number;
 };
+
+const API_URL = "../api/balance";
 
 export default function BalanceForm({
   operation,
@@ -48,7 +50,7 @@ export default function BalanceForm({
   const updateBalance = async (formData: InputsType) => {
     const { dollars, pesos } = formData;
 
-    const { message, status } = await fetch("api/balance", {
+    const { message, status } = await fetch(API_URL, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -98,7 +100,7 @@ export default function BalanceForm({
     }
     setOpenBackdrop(true);
 
-    const { message, status } = await fetch("api/balance", {
+    const { message, status } = await fetch(API_URL, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -142,7 +144,7 @@ export default function BalanceForm({
           variant="bordered"
           startContent={
             <div className="pointer-events-none flex items-center">
-              <span className="text-default-400 text-small">USD</span>
+              <span className="text-default-400 text-small">US$</span>
             </div>
           }
           {...register("dollars")}
@@ -156,7 +158,7 @@ export default function BalanceForm({
           variant="bordered"
           startContent={
             <div className="pointer-events-none flex items-center">
-              <span className="text-default-400 text-small">UYU</span>
+              <span className="text-default-400 text-small">$</span>
             </div>
           }
           {...register("pesos")}

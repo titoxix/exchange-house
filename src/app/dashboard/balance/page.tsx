@@ -7,6 +7,7 @@ import CloseBalance from "@/components/CloseBalance";
 import { getCurrentDate } from "@/utils/dates";
 import { Balance } from "@/interfaces/balance";
 import Alert from "@/components/Alert";
+import { formatCurrency } from "@/utils/currency";
 
 interface BalancePageProps {
   balance: Balance | null;
@@ -63,16 +64,16 @@ export default async function BalancePage() {
         <span className="text-lg font-bold">Monto inicial</span>
         <div className="flex gap-3">
           <p>Dolares:</p>
-          <p>USD</p> <p>{balance?.usdInitialAmount || 0}</p>
+          {formatCurrency(balance?.usdInitialAmount || 0, "es-UY", "USD")}
         </div>
         <div className="flex gap-3">
           <p>Pesos:</p>
-          <p>UYU</p> <p>{balance?.pesosInitialAmount || 0}</p>
+          {formatCurrency(balance?.pesosInitialAmount || 0, "es-UY", "UYU")}
         </div>
         <span className="text-lg font-bold">Monto actual</span>
         <div className="flex gap-3">
           <p>Dolares:</p>
-          <p>USD</p> <p>{balance?.usdAmount || 0}</p>
+          {formatCurrency(balance?.usdAmount || 0, "es-UY", "USD")}
           <BalanceForm
             operation="dollars"
             balanceOpened={!!!balance || balancePendingClose}
@@ -81,7 +82,7 @@ export default async function BalancePage() {
         </div>
         <div className="flex gap-3">
           <p>Pesos:</p>
-          <p>UYU</p> <p>{balance?.pesosAmount || 0}</p>
+          {formatCurrency(balance?.pesosAmount || 0, "es-UY", "UYU")}
           <BalanceForm
             operation="pesos"
             balanceOpened={!!!balance || balancePendingClose}

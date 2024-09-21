@@ -31,7 +31,7 @@ export const getBalancePendingClose = async (date: string) => {
   }
 };
 
-export const updateBalance = async (balance: Balance) => {
+export const updateBalance = async (balance: Omit<Balance, "createdAt">) => {
   try {
     return await BalanceDB.update(balance);
   } catch (error) {
@@ -40,7 +40,10 @@ export const updateBalance = async (balance: Balance) => {
 };
 
 export const saveNewBalance = async (
-  balance: Omit<Balance, "id" | "state" | "usdAmount" | "pesosAmount">
+  balance: Omit<
+    Balance,
+    "id" | "state" | "usdAmount" | "pesosAmount" | "createdAt"
+  >
 ) => {
   const { usdInitialAmount, pesosInitialAmount } = balance;
   try {
