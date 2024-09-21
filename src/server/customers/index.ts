@@ -1,6 +1,7 @@
 import { Customer } from "@/interfaces/customer";
-import { Customers as CustomerDB } from "@prisma/client";
+import { Customer as CustomerDB } from "@prisma/client";
 import { saveCustomer, getAlls, getCustomerById } from "@/db/customers";
+import { getCompanyById } from "@/server/company";
 import { v4 as uuidv4 } from "uuid";
 
 interface Response {
@@ -10,11 +11,11 @@ interface Response {
 }
 
 interface getCustomersResponse extends Response {
-  data: Customer[] | [];
+  data: Omit<Customer, "companyId">[] | [];
 }
 
 interface createCustomersResponse extends Response {
-  data: Customer | null;
+  data: Omit<Customer, "companyId"> | null;
 }
 
 export const getCustomers = async (
@@ -27,17 +28,19 @@ export const getCustomers = async (
       return { message: "No se encontrarón resultados", status: 404, data: [] };
     }
 
-    const adaptedCustomers: Customer[] = customers.map((customer) => {
-      return {
-        ...(withIdAuto && { idAuto: customer.idAuto }),
-        id: customer.id,
-        name: customer.name,
-        lastName: customer.lastName,
-        email: customer.email,
-        phone: customer.phone,
-        address: customer.address,
-      };
-    });
+    const adaptedCustomers: Omit<Customer, "companyId">[] = customers.map(
+      (customer) => {
+        return {
+          ...(withIdAuto && { idAuto: customer.idAuto }),
+          id: customer.id,
+          name: customer.name,
+          lastName: customer.lastName,
+          email: customer.email,
+          phone: customer.phone,
+          address: customer.address,
+        };
+      }
+    );
 
     return { message: "OK", status: 200, data: adaptedCustomers };
   } catch (error) {
@@ -65,8 +68,20 @@ export const createCustomer = async ({
   email,
   phone,
   address,
+  companyId,
 }: Omit<Customer, "id">): Promise<createCustomersResponse> => {
   try {
+    const company = await getCompanyById(companyId as string);
+
+    if (!company) {
+      return {
+        status: 404,
+        error: "Not Found",
+        message: "Company not found",
+        data: null,
+      };
+    }
+
     const id = uuidv4();
 
     if (!name || !lastName) {
@@ -85,6 +100,7 @@ export const createCustomer = async ({
       email,
       phone,
       address,
+      companyId: company?.idAuto,
     });
 
     if (!newCustomer) {

@@ -13,7 +13,39 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Customers {
+enum OrderType {
+  BUY
+  SELL
+}
+
+enum BalanceState {
+  OPEN
+  CLOSED
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+  SUBSCRIBER
+  USER
+}
+
+model Company {
+  idAuto    Int        @id @default(autoincrement())
+  id        String     @unique
+  name      String     @unique
+  address   String?
+  phone     String?
+  email     String?
+  orders    Order[]
+  customers Customer[]
+  users     User[]
+  prices    Price[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @default(now()) @updatedAt
+}
+
+model Customer {
   idAuto    Int      @id @default(autoincrement())
   id        String   @unique
   email     String?
@@ -21,20 +53,24 @@ model Customers {
   lastName  String
   phone     String?
   address   String?
-  orders    Orders[]
+  orders    Order[]
+  company   Company  @relation(fields: [companyId], references: [idAuto])
+  companyId Int
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now()) @updatedAt
 }
 
-model Orders {
+model Order {
   idAuto     Int       @id @default(autoincrement())
   id         String    @unique
   type       OrderType
   price      Float
   usdAmount  Float
   pesoAmount Float
-  customer   Customers @relation(fields: [customerId], references: [idAuto])
+  customer   Customer  @relation(fields: [customerId], references: [idAuto])
   balance    Balance   @relation(fields: [balanceId], references: [idAuto])
+  company    Company   @relation(fields: [companyId], references: [idAuto])
+  companyId  Int
   balanceId  Int
   customerId Int
   createdAt  DateTime  @default(now())
@@ -49,66 +85,57 @@ model Balance {
   usdAmount          Float
   pesosAmount        Float
   state              BalanceState
-  orders             Orders[]
+  orders             Order[]
+  user               User         @relation(fields: [userId], references: [idAuto])
+  userId             Int
   createdAt          DateTime     @default(now())
   updatedAt          DateTime     @updatedAt
 }
 
-model Prices {
+model Price {
   idAuto       String   @id @default(cuid())
   id           String   @unique
   currency     String
   priceBuy     Float
   priceSell    Float
-  sourceOrigin String
+  sourceOrigin String?
+  company      Company  @relation(fields: [companyId], references: [idAuto])
+  companyId    Int
   createdAt    DateTime @default(now())
 }
 
-model PricesConfig {
-  idAuto        Int      @id @default(autoincrement())
-  id            String   @unique
-  SourceOrigin  String // URL
-  timeToRefresh Int      @default(60) // in minutes
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+model Config {
+  idAuto             Int      @id @default(autoincrement())
+  id                 String   @unique
+  priceSourceOrigin  String?
+  priceTimeToRefresh Int?     @default(60) // in minutes
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 }
 
-model Users {
-  idAuto    Int      @id @default(autoincrement())
-  id        String   @unique
-  email     String   @unique
+model User {
+  idAuto    Int       @id @default(autoincrement())
+  id        String    @unique
+  email     String?
   name      String
   lastName  String
   profile   Profile?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  balances  Balance[]
+  company   Company   @relation(fields: [companyId], references: [idAuto])
+  companyId Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Profile {
   idAuto    Int      @id @default(autoincrement())
   id        String   @unique
   role      Role     @default(USER)
-  user      Users    @relation(fields: [userId], references: [idAuto])
+  user      User     @relation(fields: [userId], references: [idAuto])
   userId    Int      @unique
   loginName String   @unique
   enabled   Boolean  @default(true)
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-}
-
-enum OrderType {
-  BUY
-  SELL
-}
-
-enum BalanceState {
-  OPEN
-  CLOSED
-}
-
-enum Role {
-  SUPER_ADMIN
-  ADMIN
-  USER
 }

@@ -35,6 +35,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             name: `${user.name} ${user.lastName}`,
             loginName: user.loginName as string,
             role: user?.role as Role,
+            companyId: user.companyId,
+            companyName: user.companyName,
           };
         } catch (error: any) {
           console.error(error?.message);
@@ -49,6 +51,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.id = user.id;
         token.loginName = user.loginName;
         token.role = user.role;
+        token.companyId = user.companyId;
+        token.companyName = user.companyName;
       }
       return token;
     },
@@ -56,6 +60,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       if (token?.id) {
         session.user.role = token.role as Role;
         session.user.loginName = token.loginName as string;
+        session.user.companyId = token.companyId as string;
+        session.user.companyName = token.companyName as string;
       }
       return session;
     },

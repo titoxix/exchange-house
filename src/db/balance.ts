@@ -75,7 +75,7 @@ const saveNewBalance = async (
 };
 
 const update = async (
-  balance: Omit<Balance, "idAuto" | "updatedAt" | "createdAt">
+  balance: Omit<Balance, "idAuto" | "updatedAt" | "createdAt" | "userId">
 ) => {
   const { id, usdAmount, pesosAmount, state } = balance;
   try {

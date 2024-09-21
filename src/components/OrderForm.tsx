@@ -30,7 +30,7 @@ const selectOptions = [
 ];
 
 interface Props {
-  customers: Customer[];
+  customers: Omit<Customer, "companyId">[];
   originalPrice: number;
   isBalanceOpened: boolean;
   balance: Balance | null;

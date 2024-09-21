@@ -3,11 +3,11 @@
 import { z } from "zod";
 import bcrypt from "bcrypt";
 //import { createSession, deleteSession } from "@/libs/session";
-import { createUserSubscriber } from "@/server/users";
+import { createUser } from "@/server/users";
 import { Role } from "@/interfaces/profile";
-import { redirect } from "next/navigation";
-import { signIn, signOut } from "../../auth";
-//import { revalidatePath } from "next/cache";
+//import { redirect } from "next/navigation";
+//import { signIn, signOut } from "../../auth";
+import { revalidatePath } from "next/cache";
 
 const RoleTypes: z.ZodType<Role> = z.enum(["ADMIN", "USER"]);
 
@@ -21,7 +21,7 @@ const SignupFormSchema = z
       .string()
       .min(2, { message: "El apellido debe tener al menos 2 caracteres." })
       .trim(),
-    email: z.string().email({ message: "Correo electrónico inválido." }).trim(),
+    email: z.string().email().optional().or(z.literal("")),
     loginName: z
       .string()
       .min(4, {
@@ -38,12 +38,7 @@ const SignupFormSchema = z
       })
       .trim(),
     confirmPassword: z.string(),
-    companyName: z
-      .string()
-      .min(2, {
-        message: "La nombre de la compania debe tener al menos 2 caracteres",
-      })
-      .trim(),
+    role: RoleTypes,
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Las contraseñas no coinciden.",
@@ -64,47 +59,43 @@ type FormState =
   | undefined
   | null;
 
-export async function signup(state: FormState, formData: FormData) {
+export async function register(state: FormState, formData: FormData) {
   try {
     // Validate form fields
     const validatedFields = SignupFormSchema.safeParse({
-      companyName: formData.get("companyName"),
       name: formData.get("name"),
       lastName: formData.get("lastName"),
       email: formData.get("email"),
       loginName: formData.get("loginName"),
       password: formData.get("password"),
       confirmPassword: formData.get("confirmPassword"),
+      role: formData.get("role"),
     });
 
     // If any form fields are invalid, return early
     if (!validatedFields.success) {
-      console.log(validatedFields.error.flatten().fieldErrors);
       return {
         errors: validatedFields.error.flatten().fieldErrors,
       };
     }
 
     // 2. Prepare data for insertion into database
-    const { name, lastName, email, loginName, password, companyName } =
+    const { name, lastName, email, loginName, password, role } =
       validatedFields.data;
     // e.g. Hash the user's password before storing it
     const hashedPassword = await bcrypt.hash(password, 10);
+    const companyId = "565c9205-bd30-468c-9681-bbfcc39c1291"; //TODO:Temp
 
-    const newCompany = {
-      name: companyName,
-    };
-
-    const newUser = await createUserSubscriber(
+    const newUser = await createUser(
       {
         name,
         email: email || null,
         lastName,
       },
       loginName,
-      "SUBSCRIBER",
+      role,
       hashedPassword,
-      newCompany
+      companyId
     );
     if (!newUser) {
       return {
@@ -113,7 +104,7 @@ export async function signup(state: FormState, formData: FormData) {
         isRegister: false,
       };
     }
-    redirect("/signin");
+    revalidatePath("/dashboard/users");
     return {
       message: "Usuario registrado.",
       isError: false,
@@ -127,25 +118,4 @@ export async function signup(state: FormState, formData: FormData) {
       isRegister: false,
     };
   }
-}
-
-export async function signin(state: FormState, formData: FormData) {
-  try {
-    await signIn("credentials", {
-      loginName: formData.get("loginName"),
-      password: formData.get("password"),
-      redirect: false,
-    });
-  } catch (error) {
-    return {
-      message: "Correo o contraseña incorrectos.",
-    };
-  }
-  redirect("/dashboard");
-}
-
-export async function signout() {
-  //deleteSession();
-  await signOut();
-  redirect("/login");
 }

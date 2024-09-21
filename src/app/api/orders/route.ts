@@ -4,6 +4,7 @@ import { getAllOrders, createOrder } from "@/server/orders";
 import { z } from "zod";
 import { getBalanceById } from "@/server/balance";
 import { getCustomerByGeneratedId } from "@/server/customers";
+import { getCompanyById } from "@/server/company";
 
 const schema = z.object({
   customerId: z.string({
@@ -40,8 +41,15 @@ export async function GET() {
 
 export async function POST(request: NextRequest): Promise<Response> {
   try {
-    const { customerId, type, received, delivered, price, balanceId } =
-      await request.json();
+    const {
+      customerId,
+      type,
+      received,
+      delivered,
+      price,
+      balanceId,
+      companyId,
+    } = await request.json();
 
     const validatedData = schema.safeParse({
       customerId: customerId,
@@ -57,6 +65,16 @@ export async function POST(request: NextRequest): Promise<Response> {
         status: 400,
       });
     }
+
+    const company = await getCompanyById(companyId);
+
+    if (!company) {
+      return NextResponse.json({
+        message: "Compañía no encontrada",
+        status: 404,
+      });
+    }
+
     const customer = await getCustomerByGeneratedId(customerId);
 
     if (!customer) {
@@ -96,6 +114,7 @@ export async function POST(request: NextRequest): Promise<Response> {
       delivered: validatedData.data.delivered,
       price: validatedData.data.price,
       balance,
+      company,
     });
 
     if (!result) {

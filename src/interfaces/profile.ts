@@ -1,1 +1,1 @@
-export type Role = "ADMIN" | "USER";
+export type Role = "SUPER_ADMIN" | "ADMIN" | "SUBSCRIBER" | "USER";

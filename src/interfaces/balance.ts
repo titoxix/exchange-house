@@ -1,5 +1,6 @@
 export interface Balance {
   id: string;
+  userId: string;
   usdInitialAmount: number;
   pesosInitialAmount: number;
   usdAmount: number;

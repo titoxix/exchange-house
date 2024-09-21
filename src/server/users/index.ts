@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { Role } from "@/interfaces/profile";
 import { User } from "@/interfaces/user";
 import { getProfileByLoginName } from "@/server/profile";
+import { getCompanyById, getCompanyByIdAuto } from "@/server/company";
 
 interface Response {
   error?: string;
@@ -41,15 +42,27 @@ export const getUsers = async (): Promise<getUsersResponse> => {
 
 export const getUserForLogin = async (loginName: string) => {
   try {
-    const profile = await getProfileByLoginName(loginName, true);
+    const profileWithUser = await getProfileByLoginName(loginName, true);
+
+    if (!profileWithUser) {
+      return null;
+    }
+
+    const company = await getCompanyByIdAuto(profileWithUser?.user.companyId);
+
+    if (!company) {
+      return null;
+    }
 
     return {
-      id: profile?.user.id,
-      name: profile?.user.name,
-      lastName: profile?.user.lastName,
-      loginName: profile?.loginName,
-      password: profile?.password,
-      role: profile?.role,
+      id: profileWithUser?.user.id,
+      name: profileWithUser?.user.name,
+      lastName: profileWithUser?.user.lastName,
+      loginName: profileWithUser?.loginName,
+      password: profileWithUser?.password,
+      role: profileWithUser?.role,
+      companyId: company.id,
+      companyName: company.name,
     };
   } catch (error) {
     throw error;
@@ -60,13 +73,14 @@ export const createUser = async (
   user: Omit<User, "id" | "role" | "loginName">,
   loginName: string,
   role: Role,
-  password: string
+  password: string,
+  companyId: string
 ) => {
   try {
-    const userId = uuidv4();
-    const profileId = uuidv4();
+    let company = await getCompanyById(companyId);
+
     const profile = {
-      id: profileId,
+      id: uuidv4(),
       password,
       role,
       loginName,
@@ -75,12 +89,58 @@ export const createUser = async (
 
     const newUser = await usersDB.createUser(
       {
-        id: userId,
+        id: uuidv4(),
         name: user.name,
         lastName: user.lastName,
         email: user.email,
       },
-      profile
+      profile,
+      null,
+      company?.idAuto
+    );
+    return newUser;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const createUserSubscriber = async (
+  user: Omit<User, "id" | "role" | "loginName">,
+  loginName: string,
+  role: Role,
+  password: string,
+  company: {
+    name: string;
+    address?: string;
+    phone?: string;
+    email?: string;
+  }
+) => {
+  try {
+    const newCompany = {
+      id: uuidv4(),
+      name: company.name,
+      address: company?.address || null,
+      phone: company?.phone || null,
+      email: company?.email || null,
+    };
+    const profile = {
+      id: uuidv4(),
+      password,
+      role,
+      loginName,
+      enabled: true,
+    };
+
+    const newUser = await usersDB.createUser(
+      {
+        id: uuidv4(),
+        name: user.name,
+        lastName: user.lastName,
+        email: user.email,
+      },
+      profile,
+      newCompany
     );
     return newUser;
   } catch (error) {

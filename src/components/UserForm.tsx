@@ -2,7 +2,7 @@
 
 import { useFormState, useFormStatus } from "react-dom";
 import { Input, Select, SelectItem } from "@nextui-org/react";
-import { signup } from "@/actions/auth";
+import { register } from "@/actions/user";
 import ModalForm from "@/components/ModalForm";
 import { useAppContext } from "@/context";
 import { useEffect } from "react";
@@ -14,7 +14,7 @@ const SELECT_OPTIONS = [
 
 export default function UserForm() {
   const { pending } = useFormStatus();
-  const [state, formAction] = useFormState(signup, undefined);
+  const [state, formAction] = useFormState(register, undefined);
   const { setOpenSnackBar } = useAppContext();
 
   useEffect(() => {
@@ -65,7 +65,6 @@ export default function UserForm() {
             variant="bordered"
             isInvalid={state?.errors?.email && !!state?.errors?.email}
             errorMessage={state?.errors?.email && state?.errors?.email}
-            isRequired
           />
           <Input
             name="loginName"

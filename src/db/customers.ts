@@ -1,9 +1,9 @@
 import prisma from "@/libs/prisma";
-import { Customers } from "@prisma/client";
+import { Customer } from "@prisma/client";
 
 export const getAlls = async () => {
   try {
-    const customers = await prisma.customers.findMany();
+    const customers = await prisma.customer.findMany();
 
     return customers;
   } catch (error) {
@@ -13,7 +13,7 @@ export const getAlls = async () => {
 
 export const getCustomerById = async (id: string) => {
   try {
-    const customer = await prisma.customers.findUnique({
+    const customer = await prisma.customer.findUnique({
       where: {
         id: id,
       },
@@ -26,10 +26,10 @@ export const getCustomerById = async (id: string) => {
 };
 
 export const saveCustomer = async (
-  customer: Omit<Customers, "idAuto" | "updatedAt" | "createdAt">
+  customer: Omit<Customer, "idAuto" | "updatedAt" | "createdAt">
 ) => {
   try {
-    const newCustomer = await prisma.customers.create({
+    const newCustomer = await prisma.customer.create({
       data: {
         id: customer.id,
         name: customer.name,
@@ -37,6 +37,7 @@ export const saveCustomer = async (
         email: customer.email,
         phone: customer.phone,
         address: customer.address,
+        companyId: customer.companyId,
       },
     });
 

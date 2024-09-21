@@ -1,4 +1,5 @@
 import BalanceDB from "@/db/balance";
+import UserDB from "@/db/users";
 import { Balance } from "@/interfaces/balance";
 import { OrderType } from "@/interfaces/order";
 import { adapterDataToFront } from "@/adapters/balance";
@@ -48,6 +49,11 @@ export const saveNewBalance = async (
   const { usdInitialAmount, pesosInitialAmount } = balance;
   try {
     const id = uuidv4();
+    const user = await UserDB.getUserById(balance.userId);
+
+    if (!user) {
+      throw new Error("User not found");
+    }
 
     if (usdInitialAmount < 0 || pesosInitialAmount < 0) {
       throw new Error("Invalid amount");
@@ -60,6 +66,7 @@ export const saveNewBalance = async (
       pesosInitialAmount,
       usdAmount: usdInitialAmount,
       pesosAmount: pesosInitialAmount,
+      userId: user?.idAuto,
     });
   } catch (error) {
     console.error(error);

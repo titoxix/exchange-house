@@ -78,6 +78,7 @@ export const createOrder = async ({
   delivered,
   price,
   balance,
+  company,
 }: any) => {
   try {
     const generatedId = uuidv4();
@@ -95,7 +96,8 @@ export const createOrder = async ({
       usdAmount: type === "BUY" ? parseFloat(received) : parseFloat(delivered),
       price: parseFloat(price),
       customerId: Number(customer.idAuto),
-      balanceId: Number(balance?.idAuto),
+      balanceId: Number(balance.idAuto),
+      companyId: Number(company.idAuto),
     });
 
     if (!newOrderResult) {

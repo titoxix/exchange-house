@@ -12,7 +12,7 @@ import { Balance } from "@/interfaces/balance";
 
 async function getInitData(): Promise<{
   orders: Order[];
-  customers: Customer[];
+  customers: Omit<Customer, "companyId">[];
   balance: Balance | null;
 }> {
   try {

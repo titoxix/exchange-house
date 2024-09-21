@@ -8,6 +8,7 @@ export interface Customer {
   email: string | null;
   phone: string | null;
   address: string | null;
+  companyId: string;
   orders?: Order[];
   createdAt?: string;
   updatedAt?: string;
