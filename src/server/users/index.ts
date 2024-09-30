@@ -2,6 +2,7 @@ import usersDB from "@/db/users";
 import { v4 as uuidv4 } from "uuid";
 import { Role } from "@/interfaces/profile";
 import { User } from "@/interfaces/user";
+import { User as UserDB } from "@prisma/client";
 import { getProfileByLoginName } from "@/server/profile";
 import { getCompanyById, getCompanyByIdAuto } from "@/server/company";
 
@@ -45,6 +46,19 @@ export const getUsers = async (
   } catch (error) {
     console.error(error);
     return { error: "Error to get data from DB", status: 500, data: [] };
+  }
+};
+
+export const getUserById = async (userId: string): Promise<UserDB | null> => {
+  try {
+    const user = await usersDB.getUserById(userId);
+
+    if (!user) {
+      return null;
+    }
+    return user;
+  } catch (error) {
+    throw error;
   }
 };
 

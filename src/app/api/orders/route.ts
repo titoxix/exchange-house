@@ -4,7 +4,9 @@ import { getAllOrders, createOrder } from "@/server/orders";
 import { z } from "zod";
 import { getBalanceById } from "@/server/balance";
 import { getCustomerByGeneratedId } from "@/server/customers";
+import { getUserById } from "@/server/users";
 import { getCompanyById } from "@/server/company";
+import { auth } from "../../../../auth";
 
 const schema = z.object({
   customerId: z.string({
@@ -40,6 +42,9 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest): Promise<Response> {
+  const session = await auth();
+  if (!session?.user) return NextResponse.redirect("/login");
+
   try {
     const {
       customerId,
@@ -71,6 +76,14 @@ export async function POST(request: NextRequest): Promise<Response> {
     if (!company) {
       return NextResponse.json({
         message: "Compañía no encontrada",
+        status: 404,
+      });
+    }
+    const user = await getUserById(session.user.id);
+
+    if (!user) {
+      return NextResponse.json({
+        message: "Usuario no encontrado",
         status: 404,
       });
     }
@@ -115,6 +128,7 @@ export async function POST(request: NextRequest): Promise<Response> {
       price: validatedData.data.price,
       balance,
       company,
+      user,
     });
 
     if (!result) {

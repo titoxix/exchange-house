@@ -22,6 +22,27 @@ const getOrders = async (
   }
 };
 
+const getOrdersByUser = async (userIdAuto: number) => {
+  try {
+    const orders = await prisma.order.findMany({
+      where: {
+        userId: userIdAuto,
+      },
+      include: {
+        customer: true,
+        balance: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return orders;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const getOrdersByDate = async (date: string, withCustomer: boolean = false) => {
   try {
     const orders = await prisma.order.findMany({
@@ -87,6 +108,7 @@ const saveOrder = async (
         customerId: order.customerId,
         balanceId: order.balanceId,
         companyId: order.companyId,
+        userId: order.userId,
       },
     });
 
@@ -101,6 +123,7 @@ const orders = {
   saveOrder,
   getOrdersByDate,
   getOrdersByBalanceAndDate,
+  getOrdersByUser,
 };
 
 export default orders;

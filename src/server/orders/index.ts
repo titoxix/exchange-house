@@ -4,6 +4,7 @@ import { Order } from "@/interfaces/order";
 import { v4 as uuidv4 } from "uuid";
 import { updateBalance } from "../balance";
 import { getCompanyById } from "@/server/company";
+import { getUserById } from "../users";
 
 interface Response {
   error?: string;
@@ -50,10 +51,39 @@ export const getAllOrdersByCompanyId = async (
   }
 };
 
+//TODO: pending to implement
 export const getAllOrdersByUserId = async (
   userId: string
 ): Promise<Response> => {
-  return { message: "OK", status: 200, data: [] };
+  try {
+    const user = await getUserById(userId);
+
+    if (!user) {
+      return { message: "Usuario no encontrado", status: 404, data: [] };
+    }
+
+    const orders = await OrdersDB.getOrdersByUser(user.idAuto);
+
+    const adaptedOrders: Order[] = orders.map((order) => {
+      return {
+        id: order.id,
+        date: order.createdAt.toLocaleDateString(),
+        time: order.createdAt.toLocaleTimeString(),
+        pesosAmount: order.pesoAmount,
+        type: order.type,
+        price: order.price,
+        usdAmount: order.usdAmount,
+        customerId: order.customer.id,
+        customerName: `${order.customer.name} ${order.customer.lastName}`,
+        balanceId: order.balance.id,
+      };
+    });
+
+    return { message: "OK", status: 200, data: adaptedOrders };
+  } catch (error) {
+    console.error(error);
+    return { error: "Error to get data from DB", status: 500, data: [] };
+  }
 };
 
 export const getOrdersByBalanceAndDate = async (
@@ -107,6 +137,7 @@ export const createOrder = async ({
   price,
   balance,
   company,
+  user,
 }: any) => {
   try {
     const generatedId = uuidv4();
@@ -126,6 +157,7 @@ export const createOrder = async ({
       customerId: Number(customer.idAuto),
       balanceId: Number(balance.idAuto),
       companyId: Number(company.idAuto),
+      userId: Number(user.idAuto),
     });
 
     if (!newOrderResult) {

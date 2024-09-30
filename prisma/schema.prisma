@@ -67,12 +67,14 @@ model Order {
   price      Float
   usdAmount  Float
   pesoAmount Float
+  user       User      @relation(fields: [userId], references: [idAuto])
   customer   Customer  @relation(fields: [customerId], references: [idAuto])
   balance    Balance   @relation(fields: [balanceId], references: [idAuto])
   company    Company   @relation(fields: [companyId], references: [idAuto])
   companyId  Int
   balanceId  Int
   customerId Int
+  userId     Int
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 }
@@ -121,6 +123,7 @@ model User {
   lastName  String
   profile   Profile?
   balances  Balance[]
+  orders    Order[]
   company   Company   @relation(fields: [companyId], references: [idAuto])
   companyId Int
   createdAt DateTime  @default(now())
