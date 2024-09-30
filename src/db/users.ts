@@ -1,9 +1,12 @@
 import prisma from "@/libs/prisma";
 import { User, Profile, Company } from "@prisma/client";
 
-const getUsers = async () => {
+const getUsers = async (companyIdAuto: number) => {
   try {
     const users = await prisma.user.findMany({
+      where: {
+        companyId: companyIdAuto,
+      },
       include: { profile: true },
     });
 

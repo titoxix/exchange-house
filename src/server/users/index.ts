@@ -14,9 +14,17 @@ interface getUsersResponse extends Response {
   data: User[] | [];
 }
 
-export const getUsers = async (): Promise<getUsersResponse> => {
+export const getUsers = async (
+  companyId: string
+): Promise<getUsersResponse> => {
   try {
-    const users = await usersDB.getUsers();
+    const company = await getCompanyById(companyId as string);
+
+    if (!company) {
+      return { message: "Empresa no encontrada", status: 404, data: [] };
+    }
+
+    const users = await usersDB.getUsers(company.idAuto);
 
     if (!users) {
       return { message: "No se encontrarón resultados", status: 404, data: [] };

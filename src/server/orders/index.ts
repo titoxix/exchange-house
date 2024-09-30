@@ -1,8 +1,9 @@
 import OrdersDB from "@/db/orders";
-import { foundsAvailable } from "@/server/balance";
+import { foundsAvailable, getBalanceById } from "@/server/balance";
 import { Order } from "@/interfaces/order";
 import { v4 as uuidv4 } from "uuid";
 import { updateBalance } from "../balance";
+import { getCompanyById } from "@/server/company";
 
 interface Response {
   error?: string;
@@ -11,9 +12,17 @@ interface Response {
   data: Order[] | [];
 }
 
-export const getAllOrders = async (): Promise<Response> => {
+export const getAllOrdersByCompanyId = async (
+  companyId: string
+): Promise<Response> => {
   try {
-    const orders = await OrdersDB.getOrders(true);
+    const company = await getCompanyById(companyId as string);
+
+    if (!company) {
+      return { message: "Empresa no encontrada", status: 404, data: [] };
+    }
+
+    const orders = await OrdersDB.getOrders(company.idAuto, true);
 
     if (!orders) {
       return { message: "No se encontrarón resultados", status: 404, data: [] };
@@ -41,9 +50,28 @@ export const getAllOrders = async (): Promise<Response> => {
   }
 };
 
-export const getOrdersByDate = async (date: string): Promise<Response> => {
+export const getAllOrdersByUserId = async (
+  userId: string
+): Promise<Response> => {
+  return { message: "OK", status: 200, data: [] };
+};
+
+export const getOrdersByBalanceAndDate = async (
+  balanceId: string,
+  date: string
+): Promise<Response> => {
   try {
-    const orders = await OrdersDB.getOrdersByDate(date, true);
+    const balance = await getBalanceById(balanceId);
+
+    if (!balance) {
+      return { message: "Balance no encontrado", status: 404, data: [] };
+    }
+
+    const orders = await OrdersDB.getOrdersByBalanceAndDate(
+      balance?.idAuto,
+      date,
+      true
+    );
 
     if (!orders) {
       return { message: "No se encontrarón resultados", status: 404, data: [] };

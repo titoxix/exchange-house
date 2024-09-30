@@ -26,10 +26,11 @@ const getBalanceById = async (id: string) => {
   }
 };
 
-const getBalancePendingClose = async (date: string) => {
+const getBalancePendingClose = async (userIdAuto: number, date: string) => {
   try {
     const balanceInformation = await prisma.balance.findFirst({
       where: {
+        userId: userIdAuto,
         createdAt: {
           lte: new Date(date), // date in format yyyy-mm-dd
         },
@@ -43,10 +44,11 @@ const getBalancePendingClose = async (date: string) => {
   }
 };
 
-const getBalanceOpenedByDate = async (date: string) => {
+const getBalanceOpenedByDate = async (userIdAuto: number, date: string) => {
   try {
     const balanceInformation = await prisma.balance.findFirst({
       where: {
+        userId: userIdAuto,
         createdAt: {
           gte: new Date(date), // date in format yyyy-mm-dd
         },

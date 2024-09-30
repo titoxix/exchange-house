@@ -113,7 +113,6 @@ export async function signup(state: FormState, formData: FormData) {
         isRegister: false,
       };
     }
-    redirect("/signin");
     return {
       message: "Usuario registrado.",
       isError: false,

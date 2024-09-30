@@ -2,12 +2,11 @@
 
 import { z } from "zod";
 import bcrypt from "bcrypt";
-//import { createSession, deleteSession } from "@/libs/session";
 import { createUser } from "@/server/users";
 import { Role } from "@/interfaces/profile";
-//import { redirect } from "next/navigation";
-//import { signIn, signOut } from "../../auth";
 import { revalidatePath } from "next/cache";
+import { auth } from "../../auth";
+import { redirect } from "next/navigation";
 
 const RoleTypes: z.ZodType<Role> = z.enum(["ADMIN", "USER"]);
 
@@ -60,6 +59,10 @@ type FormState =
   | null;
 
 export async function register(state: FormState, formData: FormData) {
+  const session = await auth();
+
+  if (!session?.user) redirect("/login");
+
   try {
     // Validate form fields
     const validatedFields = SignupFormSchema.safeParse({
@@ -84,7 +87,7 @@ export async function register(state: FormState, formData: FormData) {
       validatedFields.data;
     // e.g. Hash the user's password before storing it
     const hashedPassword = await bcrypt.hash(password, 10);
-    const companyId = "565c9205-bd30-468c-9681-bbfcc39c1291"; //TODO:Temp
+    const companyId = session.user.companyId;
 
     const newUser = await createUser(
       {

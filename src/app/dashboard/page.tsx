@@ -1,27 +1,48 @@
 import OrdersTable from "@/components/OrdersTable";
 import PriceCard from "@/components/PriceCard";
 import { Divider } from "@nextui-org/react";
-import { getOrdersByDate } from "@/server/orders";
+import { getOrdersByBalanceAndDate } from "@/server/orders";
 import { getCustomers } from "@/server/customers";
 import { Order } from "@/interfaces/order";
 import OrderForm from "@/components/OrderForm";
 import { Customer } from "@/interfaces/customer";
-import { getBalanceOpenedByDate } from "@/server/balance";
+import { getBalanceOpenedByDateByUser } from "@/server/balance";
 import { getCurrentDate } from "@/utils/dates";
 import { Balance } from "@/interfaces/balance";
+import { auth } from "../../../auth";
+import { redirect } from "next/navigation";
 
 async function getInitData(): Promise<{
   orders: Order[];
   customers: Omit<Customer, "companyId">[];
   balance: Balance | null;
 }> {
+  const session = await auth();
+
+  if (!session?.user) redirect("/login");
+
   try {
     const currentDate = getCurrentDate("yyyy-mm-dd");
-    const { status: statusOrders, data: orders } = await getOrdersByDate(
+
+    const { status: statusCustomers, data: customers } = await getCustomers(
+      session?.user.companyId
+    );
+
+    const balanceDayResult = await getBalanceOpenedByDateByUser(
+      session.user.id,
       currentDate
     );
-    const { status: statusCustomers, data: customers } = await getCustomers();
-    const balanceDayResult = await getBalanceOpenedByDate(currentDate);
+
+    if (!balanceDayResult) {
+      return {
+        orders: [],
+        customers: statusCustomers === 200 ? customers : [],
+        balance: null,
+      };
+    }
+
+    const { status: statusOrders, data: orders } =
+      await getOrdersByBalanceAndDate(balanceDayResult.id, currentDate);
 
     return {
       orders: statusOrders === 200 ? orders : [],

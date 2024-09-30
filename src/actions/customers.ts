@@ -3,6 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { createCustomer } from "@/server/customers";
+import { auth } from "../../auth";
+import { redirect } from "next/navigation";
 
 const schema = z.object({
   name: z
@@ -28,6 +30,11 @@ export async function registerCustomer(
   prevState: { message: string },
   formData: FormData
 ) {
+  const session = await auth();
+  if (!session?.user) {
+    redirect("/login");
+  }
+
   try {
     const validatedData = schema.safeParse({
       name: formData.get("name"),
@@ -45,7 +52,14 @@ export async function registerCustomer(
         isError: true,
       };
     }
-    const data = await createCustomer(validatedData?.data);
+    const data = await createCustomer({
+      name: validatedData.data.name,
+      lastName: validatedData.data.lastName,
+      email: validatedData.data.email,
+      phone: validatedData.data.phone,
+      address: validatedData.data.address,
+      companyId: session.user.companyId,
+    });
 
     if (!data || data.status !== 201) {
       return {

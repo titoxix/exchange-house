@@ -5,6 +5,8 @@ import {
   updateBalance,
 } from "@/server/balance";
 import { z } from "zod";
+import { auth } from "../../../../auth";
+import { redirect } from "next/navigation";
 
 const schema = z.object({
   usdInitialAmount: z.number({
@@ -37,6 +39,10 @@ const schema = z.object({
 } */
 
 export async function POST(request: NextRequest) {
+  const session = await auth();
+  if (!session?.user) {
+    redirect("/login");
+  }
   try {
     const {
       usdInitialAmount,
@@ -66,10 +72,13 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const result = await saveNewBalance({
-      usdInitialAmount: usdAmountFloat,
-      pesosInitialAmount: pesosAmountFloat,
-    });
+    const result = await saveNewBalance(
+      {
+        usdInitialAmount: usdAmountFloat,
+        pesosInitialAmount: pesosAmountFloat,
+      },
+      session.user.id
+    );
 
     if (!result) {
       return NextResponse.json({

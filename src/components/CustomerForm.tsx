@@ -1,7 +1,7 @@
 "use client";
 
 import { useFormState, useFormStatus } from "react-dom";
-import { input, Input } from "@nextui-org/react";
+import { Input } from "@nextui-org/react";
 import { registerCustomer } from "@/actions/customers";
 import ModalForm from "@/components/ModalForm";
 import { useAppContext } from "@/context";

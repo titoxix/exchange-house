@@ -37,6 +37,9 @@ export default function Navbar() {
   const { data: session } = useSession();
   const pathname = usePathname();
 
+  const showAdminOptions =
+    session?.user?.role === "ADMIN" || session?.user?.role === "SUBSCRIBER";
+
   return (
     <NextUINavbar onMenuOpenChange={setIsMenuOpen} isBordered maxWidth="full">
       <NavbarContent>
@@ -70,7 +73,7 @@ export default function Navbar() {
             Clientes
           </Link>
         </NavbarItem>
-        {session?.user?.role === "ADMIN" && (
+        {showAdminOptions && (
           <NavbarItem isActive={pathname === "/dashboard/users"}>
             <Link
               color={pathname === "/dashboard/users" ? "primary" : "foreground"}
@@ -117,6 +120,7 @@ export default function Navbar() {
             <DropdownItem key="profile" className="h-14 gap-2">
               <p className="font-semibold">{session?.user?.name}</p>
               <p className="text-default-400">{session?.user?.loginName}</p>
+              <p className="text-default-400">{session?.user?.companyName}</p>
             </DropdownItem>
             <DropdownItem key="logout" color="danger">
               <SignoutButton />

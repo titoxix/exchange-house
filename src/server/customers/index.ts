@@ -1,6 +1,10 @@
 import { Customer } from "@/interfaces/customer";
 import { Customer as CustomerDB } from "@prisma/client";
-import { saveCustomer, getAlls, getCustomerById } from "@/db/customers";
+import {
+  saveCustomer,
+  getAllsByCompanyId,
+  getCustomerById,
+} from "@/db/customers";
 import { getCompanyById } from "@/server/company";
 import { v4 as uuidv4 } from "uuid";
 
@@ -19,10 +23,17 @@ interface createCustomersResponse extends Response {
 }
 
 export const getCustomers = async (
+  companyId: string,
   withIdAuto: boolean = false
 ): Promise<getCustomersResponse> => {
   try {
-    const customers = await getAlls();
+    const company = await getCompanyById(companyId as string);
+
+    if (!company) {
+      return { message: "Empresa no encontrada", status: 404, data: [] };
+    }
+
+    const customers = await getAllsByCompanyId(company.idAuto);
 
     if (!customers) {
       return { message: "No se encontrarón resultados", status: 404, data: [] };

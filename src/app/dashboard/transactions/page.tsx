@@ -1,4 +1,11 @@
-async function getInitialData() {}
+import { redirect } from "next/navigation";
+import { auth } from "../../../../auth";
+import { getAllOrdersByUserId } from "@/server/orders";
+
+async function getInitialData() {
+  const session = await auth();
+  if (!session?.user) redirect("/login");
+}
 
 export default async function Transactions() {
   //await getInitialData();

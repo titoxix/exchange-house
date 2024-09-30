@@ -1,9 +1,15 @@
 import prisma from "@/libs/prisma";
 import { Order } from "@prisma/client";
 
-const getOrders = async (withCustomer: boolean = false) => {
+const getOrders = async (
+  companyIdAuto: number,
+  withCustomer: boolean = false
+) => {
   try {
     const orders = await prisma.order.findMany({
+      where: {
+        companyId: companyIdAuto,
+      },
       include: {
         customer: withCustomer,
         balance: true,
@@ -20,6 +26,34 @@ const getOrdersByDate = async (date: string, withCustomer: boolean = false) => {
   try {
     const orders = await prisma.order.findMany({
       where: {
+        createdAt: {
+          gte: new Date(date), // date in format yyyy-mm-dd
+        },
+      },
+      include: {
+        customer: withCustomer,
+        balance: true,
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return orders;
+  } catch (error) {
+    throw error;
+  }
+};
+
+const getOrdersByBalanceAndDate = async (
+  balanceIdAuto: number,
+  date: string,
+  withCustomer: boolean = false
+) => {
+  try {
+    const orders = await prisma.order.findMany({
+      where: {
+        balanceId: balanceIdAuto,
         createdAt: {
           gte: new Date(date), // date in format yyyy-mm-dd
         },
@@ -66,6 +100,7 @@ const orders = {
   getOrders,
   saveOrder,
   getOrdersByDate,
+  getOrdersByBalanceAndDate,
 };
 
 export default orders;

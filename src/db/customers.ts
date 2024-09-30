@@ -1,9 +1,13 @@
 import prisma from "@/libs/prisma";
 import { Customer } from "@prisma/client";
 
-export const getAlls = async () => {
+export const getAllsByCompanyId = async (companyIdAuto: number) => {
   try {
-    const customers = await prisma.customer.findMany();
+    const customers = await prisma.customer.findMany({
+      where: {
+        companyId: companyIdAuto,
+      },
+    });
 
     return customers;
   } catch (error) {

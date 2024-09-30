@@ -14,14 +14,24 @@ interface Props {
 async function getData(): Promise<Props> {
   const session = await auth();
 
-  if (session?.user.role !== "ADMIN") {
+  if (!session?.user) redirect("/login");
+
+  const showPage =
+    session?.user?.role === "ADMIN" || session?.user?.role === "SUBSCRIBER";
+
+  if (!showPage) {
     return { users: [], isAuth: false };
   }
-  const { status, data: users } = await getUsers();
+  const { status, data: users } = await getUsers(session.user.companyId);
 
   if (status !== 200) return { users: [], isAuth: true };
 
-  if (users) return { users, isAuth: true };
+  // If the only user is the current user, return an empty array
+  const removeCurrentUser = users.filter(
+    (users) => users.loginName !== session.user.loginName
+  );
+
+  if (users) return { users: removeCurrentUser, isAuth: true };
 
   return { users: [], isAuth: true };
 }
