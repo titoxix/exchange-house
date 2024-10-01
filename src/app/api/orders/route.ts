@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from "next/server";
 import { OrderType } from "@/interfaces/order";
-import { getAllOrders, createOrder } from "@/server/orders";
+import { getAllOrdersByCompanyId, createOrder } from "@/server/orders";
 import { z } from "zod";
 import { getBalanceById } from "@/server/balance";
 import { getCustomerByGeneratedId } from "@/server/customers";
@@ -27,8 +27,15 @@ const schema = z.object({
 });
 
 export async function GET() {
+  const session = await auth();
+  if (!session?.user) return NextResponse.redirect("/login");
+
   try {
-    const { error, status, data: orders } = await getAllOrders();
+    const {
+      error,
+      status,
+      data: orders,
+    } = await getAllOrdersByCompanyId(session.user.companyId);
     if (status !== 200) {
       return NextResponse.json({ error: error }, { status: status });
     }
@@ -46,15 +53,8 @@ export async function POST(request: NextRequest): Promise<Response> {
   if (!session?.user) return NextResponse.redirect("/login");
 
   try {
-    const {
-      customerId,
-      type,
-      received,
-      delivered,
-      price,
-      balanceId,
-      companyId,
-    } = await request.json();
+    const { customerId, type, received, delivered, price, balanceId } =
+      await request.json();
 
     const validatedData = schema.safeParse({
       customerId: customerId,
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest): Promise<Response> {
       });
     }
 
-    const company = await getCompanyById(companyId);
+    const company = await getCompanyById(session.user.companyId);
 
     if (!company) {
       return NextResponse.json({

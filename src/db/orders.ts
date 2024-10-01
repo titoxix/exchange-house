@@ -13,6 +13,10 @@ const getOrders = async (
       include: {
         customer: withCustomer,
         balance: true,
+        user: true,
+      },
+      orderBy: {
+        createdAt: "desc",
       },
     });
 

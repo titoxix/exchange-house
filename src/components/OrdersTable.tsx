@@ -7,19 +7,28 @@ import { Chip, ChipProps, Tooltip } from "@nextui-org/react";
 import { Order } from "@/interfaces/order";
 import { formatCurrency } from "@/utils/currency";
 
-const columns = [
-  { name: "FECHA", uid: "date" },
-  { name: "HORA", uid: "time" },
-  { name: "TIPO", uid: "type" },
-  { name: "COTIZACIÓN", uid: "price" },
-  { name: "MONTO DOLARES", uid: "usdAmount" },
-  { name: "MONTO PESOS", uid: "pesosAmount" },
-  { name: "CLIENTE", uid: "customerName" },
-  //{ name: "ACCIONES", uid: "actions" },
-];
+const getColumns = (showUser: boolean) => {
+  let columns = [
+    { name: "FECHA", uid: "date" },
+    { name: "HORA", uid: "time" },
+    { name: "TIPO", uid: "type" },
+    { name: "COTIZACIÓN", uid: "price" },
+    { name: "MONTO DOLARES", uid: "usdAmount" },
+    { name: "MONTO PESOS", uid: "pesosAmount" },
+    { name: "CLIENTE", uid: "customerName" },
+    //{ name: "ACCIONES", uid: "actions" },
+  ];
+
+  if (showUser) {
+    columns.push({ name: "USUARIO", uid: "userName" });
+  }
+
+  return columns;
+};
 
 interface Props {
   orders: Order[];
+  showColumnUser?: boolean;
 }
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
@@ -27,7 +36,7 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
   SELL: "warning",
 };
 
-export default function OrdersTable({ orders }: Props) {
+export default function OrdersTable({ orders, showColumnUser = false }: Props) {
   const cellConfiguration = (cellValue: string, columnKey: string) => {
     switch (columnKey) {
       /*  case "actions":
@@ -68,7 +77,7 @@ export default function OrdersTable({ orders }: Props) {
   };
   return (
     <Table
-      columns={columns}
+      columns={getColumns(showColumnUser)}
       items={orders}
       cellConfiguration={cellConfiguration}
       emptyStateMessage="No hay órdenes para mostrar"

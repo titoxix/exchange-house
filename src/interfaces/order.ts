@@ -10,4 +10,6 @@ export interface Order {
   customerId?: string;
   customerName?: string;
   balanceId: string;
+  userId?: string;
+  userName?: string;
 }

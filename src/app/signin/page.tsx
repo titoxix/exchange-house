@@ -9,6 +9,7 @@ import { Link } from "@nextui-org/react";
 export default function SigninForm() {
   const [state, action, pending] = useFormState(signin, undefined);
 
+  console.log(state);
   return (
     <div className="flex h-screen">
       <div className="w-full max-w-md m-auto">
@@ -38,7 +39,7 @@ export default function SigninForm() {
             <Button type="submit" className="w-full" color="primary">
               Entrar
             </Button>
-            <label>{state?.message}</label>
+            <label className="text-red-500">{state?.message}</label>
 
             <label htmlFor="">
               ¿No tienes una cuenta aún?{" "}

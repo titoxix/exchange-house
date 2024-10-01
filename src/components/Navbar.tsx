@@ -83,12 +83,10 @@ export default function Navbar() {
             </Link>
           </NavbarItem>
         )}
-        <NavbarItem isActive={pathname === "/dashboard/transactions"}>
+        <NavbarItem isActive={pathname === "/dashboard/orders"}>
           <Link
-            color={
-              pathname === "/dashboard/transactions" ? "primary" : "foreground"
-            }
-            href="/dashboard/transactions"
+            color={pathname === "/dashboard/orders" ? "primary" : "foreground"}
+            href="/dashboard/orders"
             aria-current="page"
           >
             Operaciones

@@ -5,6 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 import { updateBalance } from "../balance";
 import { getCompanyById } from "@/server/company";
 import { getUserById } from "../users";
+import { adapterDataToFront } from "@/adapters/order";
 
 interface Response {
   error?: string;
@@ -17,7 +18,7 @@ export const getAllOrdersByCompanyId = async (
   companyId: string
 ): Promise<Response> => {
   try {
-    const company = await getCompanyById(companyId as string);
+    const company = await getCompanyById(companyId);
 
     if (!company) {
       return { message: "Empresa no encontrada", status: 404, data: [] };
@@ -30,18 +31,13 @@ export const getAllOrdersByCompanyId = async (
     }
 
     const adaptedOrders: Order[] = orders.map((order) => {
-      return {
-        id: order.id,
-        date: order.createdAt.toLocaleDateString(),
-        time: order.createdAt.toLocaleTimeString(),
-        pesosAmount: order.pesoAmount,
-        type: order.type,
-        price: order.price,
-        usdAmount: order.usdAmount,
-        customerId: order.customer.id,
-        customerName: order.customer.name,
-        balanceId: order.balance.id,
-      };
+      const adaptedOrder = adapterDataToFront({
+        order,
+        customer: order.customer,
+        balance: order.balance,
+        user: order.user,
+      });
+      return adaptedOrder;
     });
 
     return { message: "OK", status: 200, data: adaptedOrders };
@@ -51,7 +47,6 @@ export const getAllOrdersByCompanyId = async (
   }
 };
 
-//TODO: pending to implement
 export const getAllOrdersByUserId = async (
   userId: string
 ): Promise<Response> => {
@@ -65,18 +60,12 @@ export const getAllOrdersByUserId = async (
     const orders = await OrdersDB.getOrdersByUser(user.idAuto);
 
     const adaptedOrders: Order[] = orders.map((order) => {
-      return {
-        id: order.id,
-        date: order.createdAt.toLocaleDateString(),
-        time: order.createdAt.toLocaleTimeString(),
-        pesosAmount: order.pesoAmount,
-        type: order.type,
-        price: order.price,
-        usdAmount: order.usdAmount,
-        customerId: order.customer.id,
-        customerName: `${order.customer.name} ${order.customer.lastName}`,
-        balanceId: order.balance.id,
-      };
+      const adaptedOrder = adapterDataToFront({
+        order,
+        customer: order.customer,
+        balance: order.balance,
+      });
+      return adaptedOrder;
     });
 
     return { message: "OK", status: 200, data: adaptedOrders };
@@ -108,18 +97,12 @@ export const getOrdersByBalanceAndDate = async (
     }
 
     const adaptedOrders: Order[] = orders.map((order) => {
-      return {
-        id: order.id,
-        date: order.createdAt.toLocaleDateString(),
-        time: order.createdAt.toLocaleTimeString(),
-        pesosAmount: order.pesoAmount,
-        type: order.type,
-        price: order.price,
-        usdAmount: order.usdAmount,
-        customerId: order.customer.id,
-        customerName: `${order.customer.name} ${order.customer.lastName}`,
-        balanceId: order.balance.id,
-      };
+      const adaptedOrder = adapterDataToFront({
+        order,
+        customer: order.customer,
+        balance: order.balance,
+      });
+      return adaptedOrder;
     });
 
     return { message: "OK", status: 200, data: adaptedOrders };
