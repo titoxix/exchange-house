@@ -4,12 +4,14 @@ import {
 } from "@/server/balance";
 import BalanceForm from "@/components/BalanceForm";
 import CloseBalance from "@/components/CloseBalance";
-import { getCurrentDate } from "@/utils/dates";
+import { getCurrentDateMontName, getCurrentDate } from "@/utils/dates";
 import { Balance } from "@/interfaces/balance";
 import Alert from "@/components/Alert";
 import { formatCurrency } from "@/utils/currency";
 import { auth } from "../../../../auth";
 import { redirect } from "next/navigation";
+import { Chip } from "@nextui-org/react";
+import BalanceCard from "@/components/BalanceCard";
 
 interface BalancePageProps {
   balance: Balance | null;
@@ -60,10 +62,12 @@ async function getData(): Promise<BalancePageProps> {
 
 export default async function BalancePage() {
   const { balance, balancePendingClose } = await getData();
-  const currentDate = getCurrentDate("dd-mm-yyyy");
+  const currentDate = getCurrentDateMontName();
+  const balanceisOpened = !!balance || balancePendingClose;
+  const chipColor = balanceisOpened ? "success" : "danger";
 
   return (
-    <div className="">
+    <div className="flex flex-col gap-6">
       {balancePendingClose && (
         <Alert
           message={`La caja del dia ${balance?.createdAt} esta pendiente de cierre.`}
@@ -71,41 +75,80 @@ export default async function BalancePage() {
           severity="error"
         />
       )}
-      <section className="flex flex-col gap-4">
-        <span className="text-lg font-bold">{`Fecha: ${currentDate}`}</span>
-        <span className="text-lg font-bold">Monto inicial</span>
-        <div className="flex gap-3">
-          <p>Dolares:</p>
-          {formatCurrency(balance?.usdInitialAmount || 0, "es-UY", "USD")}
+      <section className="flex">
+        <div className="flex gap-4 items-center">
+          <div>
+            <span className="text-lg font-bold">{`Caja del día ${currentDate}`}</span>
+          </div>
+          <Chip color={chipColor}>
+            {balanceisOpened ? "Abierta" : "Cerrada"}
+          </Chip>
         </div>
-        <div className="flex gap-3">
-          <p>Pesos:</p>
-          {formatCurrency(balance?.pesosInitialAmount || 0, "es-UY", "UYU")}
-        </div>
-        <span className="text-lg font-bold">Monto actual</span>
-        <div className="flex gap-3">
-          <p>Dolares:</p>
-          {formatCurrency(balance?.usdAmount || 0, "es-UY", "USD")}
+      </section>
+      <section className="mt-5">
+        <div className="flex flex-row gap-5">
           <BalanceForm
-            operation="dollars"
-            balanceOpened={!!!balance || balancePendingClose}
-            balance={balance}
+            operation="both"
+            balanceOpened={!!balance || balancePendingClose}
           />
+          <CloseBalance balance={balance} />
         </div>
-        <div className="flex gap-3">
-          <p>Pesos:</p>
-          {formatCurrency(balance?.pesosAmount || 0, "es-UY", "UYU")}
-          <BalanceForm
-            operation="pesos"
-            balanceOpened={!!!balance || balancePendingClose}
-            balance={balance}
-          />
+      </section>
+      <section className="flex">
+        <div className="flex gap-10">
+          <BalanceCard
+            title="Dólares"
+            imagePath="/flags/united-states.png"
+            body={[
+              {
+                title: "Monto Inicial",
+                value: formatCurrency(
+                  balance?.usdInitialAmount || 0,
+                  "es-UY",
+                  "USD"
+                ),
+              },
+              {
+                title: "Dinero en caja",
+                value: formatCurrency(balance?.usdAmount || 0, "es-UY", "USD"),
+              },
+            ]}
+          >
+            <BalanceForm
+              operation="dollars"
+              balanceOpened={!!!balance || balancePendingClose}
+              balance={balance}
+            />
+          </BalanceCard>
+          <BalanceCard
+            title="Pesos Uruguayos"
+            imagePath="/flags/uruguay.png"
+            body={[
+              {
+                title: "Monto Inicial",
+                value: formatCurrency(
+                  balance?.pesosInitialAmount || 0,
+                  "es-UY",
+                  "UYU"
+                ),
+              },
+              {
+                title: "Dinero en caja",
+                value: formatCurrency(
+                  balance?.pesosAmount || 0,
+                  "es-UY",
+                  "UYU"
+                ),
+              },
+            ]}
+          >
+            <BalanceForm
+              operation="pesos"
+              balanceOpened={!!!balance || balancePendingClose}
+              balance={balance}
+            />
+          </BalanceCard>
         </div>
-        <BalanceForm
-          operation="both"
-          balanceOpened={!!balance || balancePendingClose}
-        />
-        <CloseBalance balance={balance} />
       </section>
     </div>
   );

@@ -64,7 +64,7 @@ export default function CloseBalance(props: Props) {
     <Dialog
       mainTitle="Cerrar caja"
       openButtonTitle="Cerrar caja"
-      openButtonColor="default"
+      openButtonColor="danger"
       acceptAction={closeBalance}
       openButtonIsDisabled={!props.balance}
       actionButtonTitle={"Cerrar caja"}

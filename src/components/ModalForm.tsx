@@ -9,7 +9,6 @@ import {
   Button,
   useDisclosure,
 } from "@nextui-org/react";
-import { PlusIcon } from "@/components/icons/PlusIcon";
 
 interface Props {
   modalTitle: string;
@@ -25,6 +24,8 @@ interface Props {
   closeModal?: boolean;
   onSubmit?: any;
   resetForm?: () => void;
+  startContent?: React.ReactNode;
+  endContent?: React.ReactNode;
 }
 
 export default function ModalForm(props: Props) {
@@ -43,7 +44,9 @@ export default function ModalForm(props: Props) {
         onPress={onOpen}
         color="primary"
         isDisabled={props.openModalButtonDisable || false}
-        endContent={<PlusIcon />}
+        startContent={props.startContent}
+        endContent={props.endContent}
+        className="min-w-44"
       >
         {props.openModalButtonTitle}
       </Button>

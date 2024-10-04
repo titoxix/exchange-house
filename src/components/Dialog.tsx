@@ -44,6 +44,7 @@ export default function Dialog(props: Props) {
         color={props.openButtonColor || "primary"}
         isDisabled={props.openButtonIsDisabled || false}
         onPress={onOpen}
+        className="min-w-44"
       >
         {props.openButtonTitle}
       </Button>

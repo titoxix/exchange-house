@@ -15,8 +15,8 @@ interface Props {
 }
 
 const modalButtonTitle = {
-  dollars: "(US$) Aporte dolares",
-  pesos: "($) Aporte pesos",
+  dollars: "Hacer aporte",
+  pesos: "Hacer aporte",
   both: "Abrir caja",
 };
 

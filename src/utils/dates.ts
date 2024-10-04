@@ -30,3 +30,13 @@ export const getCurrentDate = (format: DateFormat): string => {
 export const formatDateLatam = (date: Date): string => {
   return date.toISOString().split("T")[0].split("-").reverse().join("-");
 };
+
+/**
+ * Get the current date in the format dd-mm-yyyy with month name
+ * @returns {string} - Current date in the format: 01 Oct 2021
+ */
+export const getCurrentDateMontName = (): string => {
+  const currentDate = new Date();
+  const splitedDate = currentDate.toDateString().split(" ");
+  return `${splitedDate[2]} ${splitedDate[1]}. ${splitedDate[3]}`;
+};
