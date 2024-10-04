@@ -32,7 +32,7 @@ export async function registerCustomer(
 ) {
   const session = await auth();
   if (!session?.user) {
-    redirect("/login");
+    redirect("/signin");
   }
 
   try {

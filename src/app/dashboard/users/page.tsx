@@ -14,7 +14,7 @@ interface Props {
 async function getData(): Promise<Props> {
   const session = await auth();
 
-  if (!session?.user) redirect("/login");
+  if (!session?.user) redirect("/signin");
 
   const showPage =
     session?.user?.role === "ADMIN" || session?.user?.role === "SUBSCRIBER";

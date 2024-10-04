@@ -21,7 +21,7 @@ interface BalancePageProps {
 async function getData(): Promise<BalancePageProps> {
   const session = await auth();
 
-  if (!session?.user) redirect("/login");
+  if (!session?.user) redirect("/signin");
 
   try {
     const currentDate = getCurrentDate("yyyy-mm-dd");

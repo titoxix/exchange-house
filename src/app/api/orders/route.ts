@@ -28,7 +28,7 @@ const schema = z.object({
 
 export async function GET() {
   const session = await auth();
-  if (!session?.user) return NextResponse.redirect("/login");
+  if (!session?.user) return NextResponse.redirect("/signin");
 
   try {
     const {
@@ -50,7 +50,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest): Promise<Response> {
   const session = await auth();
-  if (!session?.user) return NextResponse.redirect("/login");
+  if (!session?.user) return NextResponse.redirect("/signin");
 
   try {
     const { customerId, type, received, delivered, price, balanceId } =

@@ -61,7 +61,7 @@ type FormState =
 export async function register(state: FormState, formData: FormData) {
   const session = await auth();
 
-  if (!session?.user) redirect("/login");
+  if (!session?.user) redirect("/signin");
 
   try {
     // Validate form fields

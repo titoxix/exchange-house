@@ -25,7 +25,7 @@ const schema = z.object({
 export async function POST(request: NextRequest) {
   const session = await auth();
   if (!session?.user) {
-    redirect("/login");
+    redirect("/signin");
   }
   try {
     const {

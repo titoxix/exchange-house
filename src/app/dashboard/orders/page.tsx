@@ -9,7 +9,7 @@ async function getInitialData(): Promise<{
   isUserAdmin: boolean;
 }> {
   const session = await auth();
-  if (!session?.user) redirect("/login");
+  if (!session?.user) redirect("/signin");
 
   try {
     if (session.user.role === "ADMIN" || session.user.role === "SUBSCRIBER") {

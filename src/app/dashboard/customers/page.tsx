@@ -10,7 +10,7 @@ import { redirect } from "next/navigation";
 async function getData(): Promise<{ customers: Customer[] }> {
   const session = await auth();
 
-  if (!session?.user) redirect("/login");
+  if (!session?.user) redirect("/signin");
 
   const { status, data: customers } = await getCustomers(
     session.user.companyId
