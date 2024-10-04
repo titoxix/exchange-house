@@ -1,9 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import {
-  saveNewBalance,
-  getBalanceOpenedByDate,
-  updateBalance,
-} from "@/server/balance";
+import { saveNewBalance, updateBalance } from "@/server/balance";
 import { z } from "zod";
 import { auth } from "../../../../auth";
 import { redirect } from "next/navigation";
@@ -25,18 +21,6 @@ const schema = z.object({
     required_error: "Estado requerido",
   }),
 });
-
-/* export async function GET() {
-  try {
-    const result = await getBalanceOpenedByDate(new Date());
-    return NextResponse.json(result);
-  } catch (error) {
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
-  }
-} */
 
 export async function POST(request: NextRequest) {
   const session = await auth();
