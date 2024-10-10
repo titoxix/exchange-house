@@ -15,22 +15,20 @@ import {
   Avatar,
   DropdownMenu,
   DropdownItem,
+  Image,
 } from "@nextui-org/react";
 import SignoutButton from "./SignoutButton";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 
-export const AcmeLogo = () => (
-  <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
-    <path
-      clipRule="evenodd"
-      d="M17.6482 10.1305L15.8785 7.02583L7.02979 22.5499H10.5278L17.6482 10.1305ZM19.8798 14.0457L18.11 17.1983L19.394 19.4511H16.8453L15.1056 22.5499H24.7272L19.8798 14.0457Z"
-      fill="currentColor"
-      fillRule="evenodd"
-    />
-  </svg>
-);
-const menuItems = ["Clientes", "Usuarios", "Operaciones", "Caja", "Salir"];
+const menuItems = [
+  "Clientes",
+  "Usuarios",
+  "Operaciones",
+  "Caja",
+  "Gestión de divisas",
+  "Salir",
+];
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -48,8 +46,8 @@ export default function Navbar() {
           className="sm:hidden"
         />
         <NavbarBrand>
-          <AcmeLogo />
-          <p className="font-bold text-inherit">ACME</p>
+          <Image className="w-12 h-12 mr-2" src="/logo.svg" alt="logo" />
+          <p className="font-semibold text-white">Currency Exchange</p>
         </NavbarBrand>
       </NavbarContent>
 
@@ -92,6 +90,16 @@ export default function Navbar() {
             Operaciones
           </Link>
         </NavbarItem>
+        {/* <NavbarItem isActive={pathname === "/dashboard/currency"}>
+          <Link
+            color={
+              pathname === "/dashboard/currency" ? "primary" : "foreground"
+            }
+            href="/dashboard/currency"
+          >
+            Gestión de divisas
+          </Link>
+        </NavbarItem> */}
         <NavbarItem isActive={pathname === "/dashboard/balance"}>
           <Link
             color={pathname === "/dashboard/balance" ? "primary" : "foreground"}
@@ -117,10 +125,14 @@ export default function Navbar() {
           <DropdownMenu aria-label="Profile Actions" variant="flat">
             <DropdownItem key="profile" className="h-14 gap-2">
               <p className="font-semibold">{session?.user?.name}</p>
-              <p className="text-default-400">{session?.user?.loginName}</p>
-              <p className="text-default-400">{session?.user?.companyName}</p>
+              <p className="text-default-400">
+                Usuario: {session?.user?.loginName}
+              </p>
+              <p className="text-default-400">
+                Empresa: {session?.user?.companyName}
+              </p>
             </DropdownItem>
-            <DropdownItem key="logout" color="danger">
+            <DropdownItem className="mt-2" key="logout" color="danger">
               <SignoutButton />
             </DropdownItem>
           </DropdownMenu>

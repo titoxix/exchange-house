@@ -14,8 +14,8 @@ export default async function SigninLayout({
   }
   return (
     <AppProvider>
-      <div className="flex min-h-screen flex-col items-center">
-        <main className="py-12 w-11/12 z-0">{children}</main>
+      <div className="">
+        <main className="">{children}</main>
       </div>
     </AppProvider>
   );

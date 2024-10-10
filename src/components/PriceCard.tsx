@@ -18,7 +18,7 @@ export default function PriceCard(props: Props) {
   //const [isFollowed, setIsFollowed] = React.useState(false);
 
   return (
-    <Card className="w-48">
+    <Card className="max-w-60">
       <CardHeader className="justify-between">
         <div className="flex gap-5">
           <Avatar

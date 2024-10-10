@@ -73,7 +73,7 @@ export default async function Home() {
             buy="36,70000"
             sell="39,10000"
           />
-          <PriceCard
+          {/* <PriceCard
             currency="Dólar eBROU"
             flag="united-states.png"
             buy="37,20000"
@@ -96,7 +96,7 @@ export default async function Home() {
             flag="brazil.png"
             buy="7,40000"
             sell="9,10000"
-          />
+          /> */}
         </div>
         <span className="text-xs text-default-400">
           Última actualización: 01/04/2024 17:10:02

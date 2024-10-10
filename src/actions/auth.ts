@@ -137,7 +137,7 @@ export async function signin(state: FormState, formData: FormData) {
     });
   } catch (error) {
     return {
-      message: "Correo o contraseña incorrectos.",
+      message: "Usuario o contraseña no válidos.",
     };
   }
   redirect("/dashboard");

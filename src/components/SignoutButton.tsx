@@ -6,7 +6,9 @@ export default function SignOut() {
   const [state, action, pending] = useFormState(signout, undefined);
   return (
     <form action={action}>
-      <button type="submit">Salir</button>
+      <button className="w-full text-start" type="submit">
+        Salir
+      </button>
     </form>
   );
 }
