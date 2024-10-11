@@ -22,12 +22,12 @@ import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 
 const menuItems = [
-  "Clientes",
-  "Usuarios",
-  "Operaciones",
-  "Caja",
-  "Gestión de divisas",
-  "Salir",
+  { text: "Inicio", href: "/dashboard" },
+  { text: "Clientes", href: "/dashboard/customers" },
+  { text: "Usuarios", href: "/dashboard/users" },
+  { text: "Operaciones", href: "/dashboard/orders" },
+  { text: "Caja", href: "/dashboard/balance" },
+  //{text: "Gestión de divisas", href: "/dashboard/currency"},
 ];
 
 export default function Navbar() {
@@ -46,7 +46,11 @@ export default function Navbar() {
           className="sm:hidden"
         />
         <NavbarBrand>
-          <Image className="w-12 h-12 mr-2" src="/logo.svg" alt="logo" />
+          <Image
+            className="hidden w-12 h-12 mr-2 lg:block"
+            src="/logo.svg"
+            alt="logo"
+          />
           <p className="font-semibold text-white">Currency Exchange</p>
         </NavbarBrand>
       </NavbarContent>
@@ -139,22 +143,17 @@ export default function Navbar() {
         </Dropdown>
       </NavbarContent>
 
+      {/* Mobile menu */}
       <NavbarMenu>
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>
             <Link
-              color={
-                index === 2
-                  ? "primary"
-                  : index === menuItems.length - 1
-                  ? "danger"
-                  : "foreground"
-              }
+              color={pathname === item.href ? "primary" : "foreground"}
               className="w-full"
-              href="#"
+              href={item.href}
               size="lg"
             >
-              {item}
+              {item.text}
             </Link>
           </NavbarMenuItem>
         ))}

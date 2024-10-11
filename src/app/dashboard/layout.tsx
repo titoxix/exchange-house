@@ -25,7 +25,7 @@ export default async function DashLayout({
       <AppProvider>
         <div className="flex min-h-screen flex-col items-center">
           <Navbar />
-          <main className="py-12 w-11/12 z-0">{children}</main>
+          <main className="pb-12 pt-6 w-11/12 z-0">{children}</main>
           <Snackbar />
           <Backdrop />
         </div>

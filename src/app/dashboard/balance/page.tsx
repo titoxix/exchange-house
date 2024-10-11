@@ -85,8 +85,8 @@ export default async function BalancePage() {
           </Chip>
         </div>
       </section>
-      <section className="mt-5">
-        <div className="flex flex-row gap-5">
+      <section className="flex justify-center mt-4 md:justify-normal">
+        <div className="flex flex-col w-full gap-5 md:flex-row md:w-auto">
           <BalanceForm
             operation="both"
             balanceOpened={!!balance || balancePendingClose}
@@ -94,8 +94,8 @@ export default async function BalancePage() {
           <CloseBalance balance={balance} />
         </div>
       </section>
-      <section className="flex">
-        <div className="flex gap-10">
+      <section className="flex justify-center md:justify-normal mt-4">
+        <div className="flex flex-col gap-10 md:flex-row">
           <BalanceCard
             title="Dólares"
             imagePath="/flags/united-states.png"

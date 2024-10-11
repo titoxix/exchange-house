@@ -48,7 +48,12 @@ export default function Dialog(props: Props) {
       >
         {props.openButtonTitle}
       </Button>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false}>
+      <Modal
+        isOpen={isOpen}
+        onOpenChange={onOpenChange}
+        isDismissable={false}
+        placement="top-center"
+      >
         <ModalContent>
           {(onClose) => (
             <>

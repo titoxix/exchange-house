@@ -66,26 +66,26 @@ export default async function Home() {
     <div className="">
       <section className="flex flex-col gap-4">
         <span className="text-lg font-bold">Cotizaciones</span>
-        <div className="flex gap-3 justify-center">
+        <div className="flex flex-col gap-3 items-center justify-center">
           <PriceCard
             currency="Dólar"
             flag="united-states.png"
-            buy="36,70000"
-            sell="39,10000"
+            buy="40,4500"
+            sell="42,8500"
           />
-          {/* <PriceCard
+          {/*  <PriceCard
             currency="Dólar eBROU"
             flag="united-states.png"
-            buy="37,20000"
-            sell="38,60000"
+            buy="37,2000"
+            sell="38,6000"
           />
           <PriceCard
             currency="Euro"
             flag="european-union.png"
             buy="38,47000"
             sell="43,21000"
-          />
-          <PriceCard
+          /> */}
+          {/*  <PriceCard
             currency="Peso Argentino"
             flag="argentina.png"
             buy="0,02400"
