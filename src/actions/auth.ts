@@ -4,10 +4,11 @@ import { z } from "zod";
 import bcrypt from "bcrypt";
 //import { createSession, deleteSession } from "@/libs/session";
 import { createUserSubscriber } from "@/server/users";
+import ActiveTokenDB from "@/db/activeToken";
 import { Role } from "@/interfaces/profile";
 import { redirect } from "next/navigation";
 import { signIn, signOut } from "../../auth";
-//import { revalidatePath } from "next/cache";
+import { sendEmail } from "@/utils/mail";
 
 const RoleTypes: z.ZodType<Role> = z.enum(["ADMIN", "USER"]);
 
@@ -95,7 +96,7 @@ export async function signup(state: FormState, formData: FormData) {
       name: companyName,
     };
 
-    const newUser = await createUserSubscriber(
+    /* const newUser = await createUserSubscriber(
       {
         name,
         email: email || null,
@@ -113,6 +114,39 @@ export async function signup(state: FormState, formData: FormData) {
         isRegister: false,
       };
     }
+
+    //For any reason the profile is not created
+    if (!newUser.profile) {
+      return {
+        message: "Se produjo un error al registrar el usuario.",
+        isError: true,
+        isRegister: false,
+      };
+    }
+
+    const profileId = newUser.profile.idAuto;
+    const token = await ActiveTokenDB.createToken(profileId);
+
+    const { error } = await sendEmail(
+      ["mat.360z@gmail.com"],
+      newUser.name,
+      token.token
+    ); */
+
+    const { error } = await sendEmail(
+      ["mat.360z@gmail.com"],
+      "Matias Martinez",
+      "asdasdasdasdasdasa123123"
+    );
+
+    if (error) {
+      return {
+        message: "Se produjo un error al enviar el correo de activación.",
+        isError: true,
+        isRegister: false,
+      };
+    }
+
     return {
       message: "Usuario registrado.",
       isError: false,
@@ -135,7 +169,12 @@ export async function signin(state: FormState, formData: FormData) {
       password: formData.get("password"),
       redirect: false,
     });
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.cause?.message === "User is not active") {
+      return {
+        message: "El usuario no está activo.",
+      };
+    }
     return {
       message: "Usuario o contraseña no válidos.",
     };

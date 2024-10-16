@@ -37,7 +37,6 @@ const createUser = async (
             loginName: profile.loginName,
             password: profile.password,
             role: profile.role,
-            enabled: profile.enabled,
           },
         },
         company: {

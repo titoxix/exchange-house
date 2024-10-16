@@ -85,6 +85,7 @@ export const getUserForLogin = async (loginName: string) => {
       role: profileWithUser?.role,
       companyId: company.id,
       companyName: company.name,
+      active: profileWithUser?.active,
     };
   } catch (error) {
     throw error;
@@ -106,7 +107,7 @@ export const createUser = async (
       password,
       role,
       loginName,
-      enabled: true,
+      active: false,
     };
 
     const newUser = await usersDB.createUser(
@@ -151,7 +152,7 @@ export const createUserSubscriber = async (
       password,
       role,
       loginName,
-      enabled: true,
+      active: false,
     };
 
     const newUser = await usersDB.createUser(
