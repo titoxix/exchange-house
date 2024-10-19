@@ -131,14 +131,26 @@ model User {
 }
 
 model Profile {
-  idAuto    Int      @id @default(autoincrement())
-  id        String   @unique
-  role      Role     @default(USER)
-  user      User     @relation(fields: [userId], references: [idAuto])
-  userId    Int      @unique
-  loginName String   @unique
-  enabled   Boolean  @default(true)
-  password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  idAuto       Int           @id @default(autoincrement())
+  id           String        @unique
+  role         Role          @default(USER)
+  user         User          @relation(fields: [userId], references: [idAuto])
+  userId       Int           @unique
+  loginName    String        @unique
+  active       Boolean       @default(false)
+  activeTokens ActiveToken[]
+  password     String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+model ActiveToken {
+  idAuto      Int       @id @default(autoincrement())
+  id          String    @unique
+  token       String    @unique
+  activatedAt DateTime?
+  profile     Profile   @relation(fields: [profileId], references: [idAuto])
+  profileId   Int       @unique
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }

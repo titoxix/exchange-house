@@ -85,6 +85,7 @@ export const getUserForLogin = async (loginName: string) => {
       role: profileWithUser?.role,
       companyId: company.id,
       companyName: company.name,
+      active: profileWithUser?.active,
     };
   } catch (error) {
     throw error;
@@ -106,7 +107,7 @@ export const createUser = async (
       password,
       role,
       loginName,
-      enabled: true,
+      active: false,
     };
 
     const newUser = await usersDB.createUser(
@@ -139,6 +140,16 @@ export const createUserSubscriber = async (
   }
 ) => {
   try {
+    const userAlreadyExist = await usersDB.validateIfUserExists(
+      user.email as string
+    );
+
+    if (userAlreadyExist) {
+      throw new Error("Email already exists", {
+        cause: { message: "Email already exists" },
+      });
+    }
+
     const newCompany = {
       id: uuidv4(),
       name: company.name,
@@ -151,7 +162,7 @@ export const createUserSubscriber = async (
       password,
       role,
       loginName,
-      enabled: true,
+      active: false,
     };
 
     const newUser = await usersDB.createUser(
@@ -164,6 +175,7 @@ export const createUserSubscriber = async (
       profile,
       newCompany
     );
+
     return newUser;
   } catch (error) {
     throw error;

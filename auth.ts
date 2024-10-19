@@ -23,6 +23,12 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             throw new Error("Invalid credentials.");
           }
 
+          if (!user.active) {
+            throw new Error("User is not active.", {
+              cause: { message: "User is not active" },
+            });
+          }
+
           if (user.password) {
             match = await bcrypt.compare(password as string, user.password);
           }
@@ -39,8 +45,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             companyName: user.companyName,
           };
         } catch (error: any) {
-          console.error(error?.message);
-          return null;
+          throw error;
         }
       },
     }),

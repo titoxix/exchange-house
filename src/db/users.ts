@@ -37,7 +37,6 @@ const createUser = async (
             loginName: profile.loginName,
             password: profile.password,
             role: profile.role,
-            enabled: profile.enabled,
           },
         },
         company: {
@@ -101,11 +100,26 @@ const getUserByEmail = async (email: string) => {
   }
 };
 
+const validateIfUserExists = async (email: string) => {
+  try {
+    const user = await prisma.user.findFirst({
+      where: {
+        email: email,
+      },
+    });
+
+    return !!user;
+  } catch (error) {
+    throw error;
+  }
+};
+
 const users = {
   getUsers,
   createUser,
   getUserById,
   getUserByEmail,
+  validateIfUserExists,
 };
 
 export default users;

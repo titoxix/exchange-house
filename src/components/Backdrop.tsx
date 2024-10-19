@@ -5,13 +5,13 @@ import { CircularProgress } from "@nextui-org/react";
 import BackdropMui from "@mui/material/Backdrop";
 import { useAppContext } from "@/context";
 
-export default function Backdrop() {
+export default function Backdrop(props: { open: boolean }) {
   const { openBackdrop } = useAppContext();
   return (
     <BackdropMui
       sx={{ zIndex: 100 }}
       className="backdrop-blur-sm"
-      open={openBackdrop}
+      open={openBackdrop || props.open}
     >
       <CircularProgress aria-label="Loading..." size="lg" />
     </BackdropMui>

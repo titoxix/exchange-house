@@ -4,10 +4,12 @@ import { z } from "zod";
 import bcrypt from "bcrypt";
 //import { createSession, deleteSession } from "@/libs/session";
 import { createUserSubscriber } from "@/server/users";
+import ActiveTokenDB from "@/db/activeToken";
 import { Role } from "@/interfaces/profile";
 import { redirect } from "next/navigation";
 import { signIn, signOut } from "../../auth";
-//import { revalidatePath } from "next/cache";
+import { sendEmail } from "@/utils/mail";
+import { Prisma } from "@prisma/client";
 
 const RoleTypes: z.ZodType<Role> = z.enum(["ADMIN", "USER"]);
 
@@ -21,7 +23,12 @@ const SignupFormSchema = z
       .string()
       .min(2, { message: "El apellido debe tener al menos 2 caracteres." })
       .trim(),
-    email: z.string().email({ message: "Correo electrónico inválido." }).trim(),
+    email: z
+      .string({
+        required_error: "El correo electrónico es requerido.",
+      })
+      .email({ message: "Correo electrónico inválido." })
+      .trim(),
     loginName: z
       .string()
       .min(4, {
@@ -98,7 +105,7 @@ export async function signup(state: FormState, formData: FormData) {
     const newUser = await createUserSubscriber(
       {
         name,
-        email: email || null,
+        email: email,
         lastName,
       },
       loginName,
@@ -113,13 +120,53 @@ export async function signup(state: FormState, formData: FormData) {
         isRegister: false,
       };
     }
+
+    //For any reason the profile is not created
+    if (!newUser.profile) {
+      return {
+        message: "Se produjo un error al registrar el usuario.",
+        isError: true,
+        isRegister: false,
+      };
+    }
+
+    const profileId = newUser.profile.idAuto;
+    const token = await ActiveTokenDB.createToken(profileId);
+
+    const { error } = await sendEmail([email], newUser.name, token.token);
+
+    if (error) {
+      return {
+        message: "Se produjo un error al enviar el correo de activación.",
+        isError: true,
+        isRegister: false,
+      };
+    }
+
     return {
       message: "Usuario registrado.",
       isError: false,
       isRegister: true,
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002") {
+        return {
+          message: "El nombre de usuario ya existe.",
+          isError: true,
+          isRegister: false,
+        };
+      }
+    }
+
+    if (error?.cause?.message === "Email already exists") {
+      return {
+        message: "El correo electrónico ya está en uso.",
+        isError: true,
+        isRegister: false,
+      };
+    }
     return {
       message: "Se produjo un error inesperado.",
       isError: true,
@@ -128,14 +175,19 @@ export async function signup(state: FormState, formData: FormData) {
   }
 }
 
-export async function signin(state: FormState, formData: FormData) {
+export async function signin(prevState: FormState, formData: FormData) {
   try {
     await signIn("credentials", {
       loginName: formData.get("loginName"),
       password: formData.get("password"),
       redirect: false,
     });
-  } catch (error) {
+  } catch (error: any) {
+    if (error?.cause?.message === "User is not active") {
+      return {
+        message: "El usuario no está activo.",
+      };
+    }
     return {
       message: "Usuario o contraseña no válidos.",
     };

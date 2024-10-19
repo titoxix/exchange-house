@@ -3,10 +3,11 @@
 import { useFormState } from "react-dom";
 import { signin } from "@/actions/auth";
 import { LockIcon } from "@/components/icons/LockIcon";
-import { Button, Checkbox, Input, Link, Image } from "@nextui-org/react";
+import { Input, Link, Image } from "@nextui-org/react";
+import SubmitButton from "./submitButton";
 
 export default function SigninForm() {
-  const [state, action, pending] = useFormState(signin, undefined);
+  const [state, action] = useFormState(signin, undefined);
 
   return (
     <section>
@@ -62,9 +63,7 @@ export default function SigninForm() {
                   </Link>
                 </div> */}
                 <div className="flex flex-col gap-4 mt-6">
-                  <Button type="submit" className="w-full" color="primary">
-                    Entrar
-                  </Button>
+                  <SubmitButton />
                   <p className="text-sm font-light text-gray-500 dark:text-gray-400">
                     ¿No tienes una cuenta aún?{" "}
                     <Link
