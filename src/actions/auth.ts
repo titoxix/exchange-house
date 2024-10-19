@@ -9,6 +9,7 @@ import { Role } from "@/interfaces/profile";
 import { redirect } from "next/navigation";
 import { signIn, signOut } from "../../auth";
 import { sendEmail } from "@/utils/mail";
+import { Prisma } from "@prisma/client";
 
 const RoleTypes: z.ZodType<Role> = z.enum(["ADMIN", "USER"]);
 
@@ -22,7 +23,12 @@ const SignupFormSchema = z
       .string()
       .min(2, { message: "El apellido debe tener al menos 2 caracteres." })
       .trim(),
-    email: z.string().email({ message: "Correo electrónico inválido." }).trim(),
+    email: z
+      .string({
+        required_error: "El correo electrónico es requerido.",
+      })
+      .email({ message: "Correo electrónico inválido." })
+      .trim(),
     loginName: z
       .string()
       .min(4, {
@@ -96,10 +102,10 @@ export async function signup(state: FormState, formData: FormData) {
       name: companyName,
     };
 
-    /* const newUser = await createUserSubscriber(
+    const newUser = await createUserSubscriber(
       {
         name,
-        email: email || null,
+        email: email,
         lastName,
       },
       loginName,
@@ -127,17 +133,7 @@ export async function signup(state: FormState, formData: FormData) {
     const profileId = newUser.profile.idAuto;
     const token = await ActiveTokenDB.createToken(profileId);
 
-    const { error } = await sendEmail(
-      ["mat.360z@gmail.com"],
-      newUser.name,
-      token.token
-    ); */
-
-    const { error } = await sendEmail(
-      ["mat.360z@gmail.com"],
-      "Matias Martinez",
-      "asdasdasdasdasdasa123123"
-    );
+    const { error } = await sendEmail([email], newUser.name, token.token);
 
     if (error) {
       return {
@@ -152,8 +148,25 @@ export async function signup(state: FormState, formData: FormData) {
       isError: false,
       isRegister: true,
     };
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      if (error.code === "P2002") {
+        return {
+          message: "El nombre de usuario ya existe.",
+          isError: true,
+          isRegister: false,
+        };
+      }
+    }
+
+    if (error?.cause?.message === "Email already exists") {
+      return {
+        message: "El correo electrónico ya está en uso.",
+        isError: true,
+        isRegister: false,
+      };
+    }
     return {
       message: "Se produjo un error inesperado.",
       isError: true,
@@ -162,7 +175,7 @@ export async function signup(state: FormState, formData: FormData) {
   }
 }
 
-export async function signin(state: FormState, formData: FormData) {
+export async function signin(prevState: FormState, formData: FormData) {
   try {
     await signIn("credentials", {
       loginName: formData.get("loginName"),

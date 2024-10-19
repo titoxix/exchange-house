@@ -18,8 +18,24 @@ const createToken = async (profileId: number) => {
   }
 };
 
+const updateToken = async (token: string) => {
+  try {
+    await prisma.activeToken.update({
+      where: {
+        token,
+      },
+      data: {
+        activatedAt: new Date(),
+      },
+    });
+  } catch (error) {
+    throw error;
+  }
+};
+
 const activeToken = {
   createToken,
+  updateToken,
 };
 
 export default activeToken;

@@ -140,6 +140,16 @@ export const createUserSubscriber = async (
   }
 ) => {
   try {
+    const userAlreadyExist = await usersDB.validateIfUserExists(
+      user.email as string
+    );
+
+    if (userAlreadyExist) {
+      throw new Error("Email already exists", {
+        cause: { message: "Email already exists" },
+      });
+    }
+
     const newCompany = {
       id: uuidv4(),
       name: company.name,
@@ -165,6 +175,7 @@ export const createUserSubscriber = async (
       profile,
       newCompany
     );
+
     return newUser;
   } catch (error) {
     throw error;

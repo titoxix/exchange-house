@@ -4,9 +4,10 @@ import { useFormState } from "react-dom";
 import { signup } from "@/actions/auth";
 import { LockIcon } from "@/components/icons/LockIcon";
 import { Link, Image, Input, Button } from "@nextui-org/react";
+import SubmitButton from "./submitButton";
 
 export default function SigninForm() {
-  const [state, action, pending] = useFormState(signup, undefined);
+  const [state, action] = useFormState(signup, undefined);
 
   return (
     <section>
@@ -131,11 +132,14 @@ export default function SigninForm() {
                 />
               </div>
               <div className="flex flex-col space-y-2 text-center">
-                <Button type="submit" className="w-full" color="primary">
-                  Registrame
-                </Button>
-                <label>{state?.message}</label>
-
+                <SubmitButton />
+                <div className="flex flex-col justify-center text-center mt-4">
+                  {state?.isError ? (
+                    <label className="text-red-600">{state?.message}</label>
+                  ) : (
+                    <label className="text-green-600">{state?.message}</label>
+                  )}
+                </div>
                 <label htmlFor="">
                   ¿Ya tienen una cuenta?{" "}
                   {
