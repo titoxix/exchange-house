@@ -11,7 +11,7 @@ export const getCurrentDate = (format: DateFormat): string => {
   let month = currentDate.getUTCMonth() + 1;
   const year = currentDate.getUTCFullYear();
 
-  let monthString = day.toString();
+  let monthString = month.toString();
 
   if (month < 10) {
     monthString = `0${month}`;

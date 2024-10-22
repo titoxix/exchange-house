@@ -7,7 +7,7 @@ import { Order } from "@/interfaces/order";
 import OrderForm from "@/components/OrderForm";
 import { Customer } from "@/interfaces/customer";
 import { getBalanceOpenedByDateByUser } from "@/server/balance";
-import { getCurrentDate } from "@/utils/dates";
+import { getCurrentDate, getCurrentDateMontName } from "@/utils/dates";
 import { Balance } from "@/interfaces/balance";
 import { auth } from "../../../auth";
 import { redirect } from "next/navigation";
@@ -60,7 +60,7 @@ async function getInitData(): Promise<{
 
 export default async function Home() {
   const { orders, customers, balance } = await getInitData();
-  const currentDate = getCurrentDate("dd-mm-yyyy");
+  const currentDate = getCurrentDateMontName();
 
   return (
     <div className="">
