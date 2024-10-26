@@ -30,19 +30,34 @@ enum Role {
   USER
 }
 
+enum AccountStatus {
+  ACTIVE
+  INACTIVE
+  CLOSED
+}
+
+enum AccountTransactionType {
+  DEPOSIT
+  WITHDRAWAL
+}
+
 model Company {
-  idAuto    Int        @id @default(autoincrement())
-  id        String     @unique
-  name      String     @unique
-  address   String?
-  phone     String?
-  email     String?
-  orders    Order[]
-  customers Customer[]
-  users     User[]
-  prices    Price[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @default(now()) @updatedAt
+  idAuto             Int                  @id @default(autoincrement())
+  id                 String               @unique
+  name               String               @unique
+  address            String?
+  phone              String?
+  email              String?
+  orders             Order[]
+  customers          Customer[]
+  users              User[]
+  prices             Price[]
+  accountsTypes      AccountType[]
+  currencies         Currency[]
+  accounts           Account[]
+  AccountTransaction AccountTransaction[]
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @default(now()) @updatedAt
 }
 
 model Customer {
@@ -68,13 +83,15 @@ model Order {
   usdAmount  Float
   pesoAmount Float
   user       User      @relation(fields: [userId], references: [idAuto])
+  userId     Int
   customer   Customer  @relation(fields: [customerId], references: [idAuto])
+  customerId Int
   balance    Balance   @relation(fields: [balanceId], references: [idAuto])
+  balanceId  Int
   company    Company   @relation(fields: [companyId], references: [idAuto])
   companyId  Int
-  balanceId  Int
-  customerId Int
-  userId     Int
+  userExec   User?     @relation("UserExec", fields: [userExecId], references: [idAuto]) // user that execute the order
+  userExecId Int?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 }
@@ -116,18 +133,20 @@ model Config {
 }
 
 model User {
-  idAuto    Int       @id @default(autoincrement())
-  id        String    @unique
-  email     String?
-  name      String
-  lastName  String
-  profile   Profile?
-  balances  Balance[]
-  orders    Order[]
-  company   Company   @relation(fields: [companyId], references: [idAuto])
-  companyId Int
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  idAuto     Int       @id @default(autoincrement())
+  id         String    @unique
+  email      String?
+  name       String
+  lastName   String
+  profile    Profile?
+  balances   Balance[]
+  orders     Order[]
+  ordersExec Order[]   @relation("UserExec")
+  company    Company   @relation(fields: [companyId], references: [idAuto])
+  account    Account[]
+  companyId  Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
 }
 
 model Profile {
@@ -153,4 +172,63 @@ model ActiveToken {
   profileId   Int       @unique
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+}
+
+model Account {
+  idAuto        Int                  @id @default(autoincrement())
+  id            String               @unique
+  user          User                 @relation(fields: [userId], references: [idAuto])
+  userId        Int
+  company       Company              @relation(fields: [companyId], references: [idAuto])
+  companyId     Int
+  balance       Float
+  type          AccountType          @relation(fields: [accountTypeId], references: [idAuto])
+  accountTypeId Int
+  currency      Currency             @relation(fields: [currencyId], references: [idAuto])
+  currencyId    Int
+  transactions  AccountTransaction[]
+  status        AccountStatus        @default(ACTIVE)
+  createdAt     DateTime             @default(now())
+  updatedAt     DateTime             @updatedAt
+}
+
+model AccountType {
+  idAuto    Int       @id @default(autoincrement())
+  id        String    @unique
+  name      String
+  accounts  Account[]
+  comapny   Company   @relation(fields: [companyId], references: [idAuto])
+  companyId Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Currency {
+  idAuto             Int                  @id @default(autoincrement())
+  id                 String               @unique
+  name               String
+  symbol             String
+  flag               String?
+  comapny            Company              @relation(fields: [companyId], references: [idAuto])
+  companyId          Int
+  AccountTransaction AccountTransaction[]
+  accounts           Account[]
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+}
+
+model AccountTransaction {
+  idAuto     Int                    @id @default(autoincrement())
+  id         String                 @unique
+  account    Account                @relation(fields: [accountId], references: [idAuto])
+  accountId  Int
+  company    Company                @relation(fields: [companyId], references: [idAuto])
+  companyId  Int
+  amount     Float
+  currency   Currency               @relation(fields: [currencyId], references: [idAuto])
+  currencyId Int
+  type       AccountTransactionType
+  detail     String?
+  createdAt  DateTime               @default(now())
+  updatedAt  DateTime               @updatedAt
 }

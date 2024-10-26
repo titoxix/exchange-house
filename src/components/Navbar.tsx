@@ -85,6 +85,18 @@ export default function Navbar() {
             </Link>
           </NavbarItem>
         )}
+        {showAdminOptions && (
+          <NavbarItem isActive={pathname === "/dashboard/accounts"}>
+            <Link
+              color={
+                pathname === "/dashboard/accounts" ? "primary" : "foreground"
+              }
+              href="/dashboard/accounts"
+            >
+              Cuentas
+            </Link>
+          </NavbarItem>
+        )}
         <NavbarItem isActive={pathname === "/dashboard/orders"}>
           <Link
             color={pathname === "/dashboard/orders" ? "primary" : "foreground"}
