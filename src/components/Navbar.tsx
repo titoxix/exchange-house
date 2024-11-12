@@ -16,15 +16,18 @@ import {
   DropdownMenu,
   DropdownItem,
   Image,
+  Button,
 } from "@nextui-org/react";
 import SignoutButton from "./SignoutButton";
 import { useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
+import { ChevronDown } from "@/components/icons/ChevronDownIcon";
 
 const menuItems = [
   { text: "Inicio", href: "/dashboard" },
   { text: "Clientes", href: "/dashboard/customers" },
   { text: "Usuarios", href: "/dashboard/users" },
+  { text: "Cuentas", href: "/dashboard/accounts" },
   { text: "Operaciones", href: "/dashboard/orders" },
   { text: "Caja", href: "/dashboard/balance" },
   //{text: "Gestión de divisas", href: "/dashboard/currency"},
@@ -40,6 +43,7 @@ export default function Navbar() {
 
   return (
     <NextUINavbar onMenuOpenChange={setIsMenuOpen} isBordered maxWidth="full">
+      {/* Menu toggle and brand */}
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -55,6 +59,7 @@ export default function Navbar() {
         </NavbarBrand>
       </NavbarContent>
 
+      {/* Web menu */}
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         <NavbarItem isActive={pathname === "/dashboard"}>
           <Link
@@ -86,17 +91,66 @@ export default function Navbar() {
           </NavbarItem>
         )}
         {showAdminOptions && (
-          <NavbarItem isActive={pathname === "/dashboard/accounts"}>
-            <Link
-              color={
-                pathname === "/dashboard/accounts" ? "primary" : "foreground"
+          <Dropdown>
+            <NavbarItem
+              isActive={
+                pathname === "/dashboard/accounts" ||
+                pathname === "/dashboard/accounts/accounts-types"
               }
-              href="/dashboard/accounts"
             >
-              Cuentas
-            </Link>
-          </NavbarItem>
+              <DropdownTrigger>
+                <Button
+                  disableRipple
+                  className="p-0 bg-transparent data-[hover=true]:bg-transparent text-base "
+                  endContent={<ChevronDown fill="currentColor" size={16} />}
+                  radius="sm"
+                  variant="light"
+                  color={
+                    pathname === "/dashboard/accounts" ||
+                    pathname === "/dashboard/accounts/accounts-types"
+                      ? "primary"
+                      : "default"
+                  }
+                >
+                  Cuentas
+                </Button>
+              </DropdownTrigger>
+            </NavbarItem>
+            <DropdownMenu
+              aria-label="user accounts"
+              className="w-[200px]"
+              itemClasses={{
+                base: "gap-4",
+              }}
+            >
+              <DropdownItem key="autoscaling">
+                <Link
+                  color={
+                    pathname === "/dashboard/accounts"
+                      ? "primary"
+                      : "foreground"
+                  }
+                  href="/dashboard/accounts"
+                >
+                  Cuentas de usuarios
+                </Link>
+              </DropdownItem>
+              <DropdownItem key="autoscaling">
+                <Link
+                  color={
+                    pathname === "/dashboard/accounts/accounts-types"
+                      ? "primary"
+                      : "foreground"
+                  }
+                  href="/dashboard/accounts/accounts-types"
+                >
+                  Tipos de cuentas
+                </Link>
+              </DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
         )}
+
         <NavbarItem isActive={pathname === "/dashboard/orders"}>
           <Link
             color={pathname === "/dashboard/orders" ? "primary" : "foreground"}

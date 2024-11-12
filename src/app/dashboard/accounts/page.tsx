@@ -1,38 +1,42 @@
 import { auth } from "../../../../auth";
 import { redirect } from "next/navigation";
-import CurrencyTable from "@/components/currency/CurrencyTable";
-import CurrencyForm from "@/components/currency/CurrencyForm";
+import AccountForm from "@/components/accounts/AccountForm";
+import AccountTable from "@/components/accounts/AccountTable";
+import { getCustomers } from "@/server/customers";
+import { Customer } from "@/interfaces/customer";
 
-async function getData(): Promise<any> {
+async function getData(): Promise<{
+  customers: Omit<Customer, "companyId">[];
+}> {
   const session = await auth();
 
   if (!session?.user) redirect("/signin");
 
-  //redirect("/dashboard"); //Redirect to dashboard temporarily
-
-  /*   const currencies = [
-    {
-      id: 1,
-      flag: "united-states.png",
-      code: "USD",
-      buyRate: 40.45,
-      sellRate: 42.65,
-      marketRate: 41.35,
-    },
-  ];
-
-  return { currencies }; */
+  try {
+    const { status: statusCustomers, data: customers } = await getCustomers(
+      session?.user.companyId
+    );
+    return {
+      customers: statusCustomers === 200 ? customers : [],
+    };
+  } catch (error) {
+    return {
+      customers: [],
+    };
+  }
 }
 
 export default async function Accounts() {
-  //const { currencies } = await getData();
+  const { customers } = await getData();
 
   return (
     <div className="">
       <section className="flex flex-col gap-4">
         <span className="text-lg font-bold">Gestión de Cuentas</span>
-        <div className="flex gap-3">{/*   <CurrencyForm /> */}</div>
-        {/*  <CurrencyTable currencies={currencies} /> */}
+        <div className="flex gap-3">
+          <AccountForm customers={customers} />
+        </div>
+        <AccountTable accounts={[]} />
       </section>
     </div>
   );

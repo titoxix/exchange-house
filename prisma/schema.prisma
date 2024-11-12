@@ -61,18 +61,19 @@ model Company {
 }
 
 model Customer {
-  idAuto    Int      @id @default(autoincrement())
-  id        String   @unique
+  idAuto    Int       @id @default(autoincrement())
+  id        String    @unique
   email     String?
   name      String
   lastName  String
   phone     String?
   address   String?
   orders    Order[]
-  company   Company  @relation(fields: [companyId], references: [idAuto])
+  account   Account[]
+  company   Company   @relation(fields: [companyId], references: [idAuto])
   companyId Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @default(now()) @updatedAt
 }
 
 model Order {
@@ -143,7 +144,6 @@ model User {
   orders     Order[]
   ordersExec Order[]   @relation("UserExec")
   company    Company   @relation(fields: [companyId], references: [idAuto])
-  account    Account[]
   companyId  Int
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
@@ -177,8 +177,8 @@ model ActiveToken {
 model Account {
   idAuto        Int                  @id @default(autoincrement())
   id            String               @unique
-  user          User                 @relation(fields: [userId], references: [idAuto])
-  userId        Int
+  customer      Customer             @relation(fields: [customerId], references: [idAuto])
+  customerId    Int
   company       Company              @relation(fields: [companyId], references: [idAuto])
   companyId     Int
   balance       Float

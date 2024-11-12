@@ -22,6 +22,8 @@ interface Props {
     | "success"
     | "warning"
     | "secondary";
+  openButtonIsOnlyIcon?: boolean;
+  openButtonIcon?: React.ReactNode;
   children?: React.ReactNode;
   acceptAction?: () => void;
   actionButtonTitle?: string;
@@ -40,14 +42,34 @@ export default function Dialog(props: Props) {
 
   return (
     <>
-      <Button
+      {props.openButtonIsOnlyIcon ? (
+        <Button
+          isIconOnly
+          variant="light"
+          color={props.openButtonColor}
+          isDisabled={props.openButtonIsDisabled || false}
+          onPress={onOpen}
+        >
+          {props.openButtonIcon}
+        </Button>
+      ) : (
+        <Button
+          color={props.openButtonColor || "primary"}
+          isDisabled={props.openButtonIsDisabled || false}
+          onPress={onOpen}
+          className="min-w-44"
+        >
+          {props.openButtonTitle}
+        </Button>
+      )}
+      {/*  <Button
         color={props.openButtonColor || "primary"}
         isDisabled={props.openButtonIsDisabled || false}
         onPress={onOpen}
         className="min-w-44"
       >
         {props.openButtonTitle}
-      </Button>
+      </Button> */}
       <Modal
         isOpen={isOpen}
         onOpenChange={onOpenChange}
