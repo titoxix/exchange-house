@@ -9,6 +9,7 @@ import {
   Button,
   useDisclosure,
 } from "@nextui-org/react";
+import { EditIcon } from "@/components/icons/EditIcon";
 
 interface Props {
   modalTitle: string;
@@ -17,6 +18,7 @@ interface Props {
   openModalButtonColor?: string;
   openModalButtonDisable?: boolean;
   sendDataButtonTitle: string;
+  isEditButton?: boolean;
   formStatus?: boolean;
   action?: any;
   message?: string;
@@ -40,16 +42,28 @@ export default function ModalForm(props: Props) {
 
   return (
     <>
-      <Button
-        onPress={onOpen}
-        color="primary"
-        isDisabled={props.openModalButtonDisable || false}
-        startContent={props.startContent}
-        endContent={props.endContent}
-        className="min-w-44"
-      >
-        {props.openModalButtonTitle}
-      </Button>
+      {props.isEditButton ? (
+        <Button
+          isIconOnly
+          variant="light"
+          onPress={onOpen}
+          aria-label="edit"
+          isDisabled={props.openModalButtonDisable || false}
+        >
+          <EditIcon />
+        </Button>
+      ) : (
+        <Button
+          onPress={onOpen}
+          color="primary"
+          isDisabled={props.openModalButtonDisable || false}
+          startContent={props.startContent}
+          endContent={props.endContent}
+          className="min-w-44"
+        >
+          {props.openModalButtonTitle}
+        </Button>
+      )}
 
       <Modal
         isOpen={isOpen}
