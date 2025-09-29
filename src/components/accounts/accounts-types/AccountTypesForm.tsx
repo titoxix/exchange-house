@@ -31,11 +31,11 @@ export default function AccountTypeForm({ isEdit, accountTypeData }: Props) {
   const [value, setValue] = useState(accountTypeData?.name);
   const formAction = registerAccountTypeAction.bind(null, accountTypeData?.id);
 
-  console.log("AccountTypeForm -> data", data);
-  console.log("AccountTypeForm -> state", state);
-  console.log("AccountTypeForm -> pending", pending);
+  //console.log("AccountTypeForm -> data", data);
+  //console.log("AccountTypeForm -> state", state);
+  //console.log("AccountTypeForm -> pending", pending);
 
-  /* useEffect(() => {
+  useEffect(() => {
     if (state?.message) {
       setOpenSnackBar({
         open: !!state?.message,
@@ -43,7 +43,7 @@ export default function AccountTypeForm({ isEdit, accountTypeData }: Props) {
         severity: state?.isError ? "error" : "success",
       });
     }
-  }, [state, setOpenSnackBar]); */
+  }, [state, setOpenSnackBar]);
 
   return (
     <ModalForm

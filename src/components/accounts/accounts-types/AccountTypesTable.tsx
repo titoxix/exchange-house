@@ -5,6 +5,8 @@ import { Tooltip } from "@nextui-org/react";
 import { AccountType } from "@/interfaces/account";
 import DeleteRowElement from "@/components/DeleteRowElement";
 import { deleteAccountTypeAction } from "@/actions/account";
+import { useAppContext } from "@/context";
+import { useFormState, useFormStatus } from "react-dom";
 
 const columns = [
   { name: "NOMBRE", uid: "name" },
@@ -17,11 +19,16 @@ interface Props {
 }
 
 export default function AccountTypesTable(props: Props) {
+  const { setOpenSnackBar } = useAppContext();
+  //const { pending, data, action } = useFormStatus();
+  //const [] = useFormState(deleteAccountTypeAction, {});
+
   const cellConfiguration = (
     cellValue: string,
     columnKey: string,
     item?: Item
   ) => {
+    "use client";
     switch (columnKey) {
       case "accountsQuantity":
         const accountsQuantity = Array.isArray(item?.accountsQuantity)
@@ -53,6 +60,7 @@ export default function AccountTypesTable(props: Props) {
         return cellValue;
     }
   };
+
   return (
     <Table
       columns={columns}

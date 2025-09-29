@@ -4,6 +4,7 @@ import { auth } from "../../auth";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createAccountType, deleteAccountType } from "@/server/account";
+import { revalidatePath } from "next/cache";
 
 const schema = z.object({
   accountName: z
@@ -43,11 +44,13 @@ export async function registerAccountTypeAction(
       companyId: session.user.companyId,
     });
 
+    /* revalidatePath("/dashboard/accounts/accounts-types");
+
     return {
       message: "Tipo de cuenta registrado correctamente",
       isError: false,
       isRegister: true,
-    };
+    }; */
   } catch (error) {
     console.error(error);
     return {
@@ -56,6 +59,13 @@ export async function registerAccountTypeAction(
       isRegister: false,
     };
   }
+  revalidatePath("/dashboard/accounts/accounts-types");
+
+  return {
+    message: "Tipo de cuenta registrado correctamente",
+    isError: false,
+    isRegister: true,
+  };
 }
 
 export async function deleteAccountTypeAction(id: string) {
@@ -70,11 +80,6 @@ export async function deleteAccountTypeAction(id: string) {
 
     const result = await deleteAccountType(id);
     console.log("result", result);
-    return {
-      message: "Tipo de cuenta eliminado correctamente",
-      isError: false,
-      isDelete: true,
-    };
   } catch (error) {
     console.error(error);
     return {
@@ -83,4 +88,10 @@ export async function deleteAccountTypeAction(id: string) {
       isDelete: false,
     };
   }
+  revalidatePath("/dashboard/accounts/accounts-types");
+  return {
+    message: "Tipo de cuenta eliminado correctamente",
+    isError: false,
+    isDelete: true,
+  };
 }
